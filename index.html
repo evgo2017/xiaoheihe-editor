@@ -712,17 +712,34 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       border-color: #0066cc;
     }
+
+    /* Header Links */
+    .header-link {
+      font-size: 13px;
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .header-link:hover {
+      color: #0066cc;
+      text-decoration: underline;
+    }
   </style>
 </head>
 
 <body>
-  <header style="display: flex; align-items: center; justify-content: space-between;">
-    <div style="flex: 1;">
-      <h1 style="display: flex; align-items: center; gap: 8px;">📦 小黑盒文章转换器</h1>
-      <p class="description">一键将 Markdown 转换为适合小黑盒发布的富文本内容，支持代码高亮与表格转图。</p>
+  <header
+    style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 12px; gap: 16px;">
+    <div style="min-width: 0;">
+      <h1
+        style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px; font-size: 20px; white-space: nowrap;">
+        📦 小黑盒文章编辑器</h1>
+      <p class="description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">一键将 Markdown
+        转换为适合小黑盒发布的富文本内容，支持代码高亮与表格转图。</p>
     </div>
 
-    <div class="column-toggles" style="flex: 0 0 auto; margin: 0 32px;">
+    <div class="column-toggles" style="justify-self: center;">
       <label class="column-toggle">
         <input type="checkbox" id="toggle-source" checked> 源码编辑
       </label>
@@ -734,7 +751,9 @@
       </label>
     </div>
 
-    <div style="flex: 1; display: flex; justify-content: flex-end;">
+    <div style="display: flex; align-items: center; justify-self: end; gap: 16px;">
+      <a href="https://evgo2017.com/project/xiaoheihe-editor" target="_blank" class="header-link">项目主页</a>
+      <a href="https://github.com/evgo2017/xiaoheihe-editor" target="_blank" class="header-link">源码仓库</a>
       <button class="help-btn" id="helpBtn">语法帮助</button>
     </div>
   </header>
@@ -837,15 +856,17 @@
       <div class="editor-container" style="display: flex; flex-direction: column;">
         <div id="export-editor" class="export-editor-container"></div>
         <div class="export-footer">
-          <div class="export-actions">
+          <div class="export-actions" style="margin-bottom: 8px;">
             <button class="export-copy-btn" id="exportCopyBtn">
-              <span class="copy-icon">📋</span> 复制内容到剪贴板
+              <span class="copy-icon">📋</span> 一键复制文字内容
             </button>
-            <span class="copy-hint">文字内容会自动粘贴</span>
           </div>
-          <div class="image-copy-hint" style="margin-top: 0;">
-            <strong>💡 图片上传说明</strong>
-            由于小黑盒编辑器限制，请<strong>点击下方图片</strong>→<strong>右键复制图片</strong>→在小黑盒编辑器中粘贴
+          <div class="image-copy-hint" style="margin-top: 0; padding: 10px 14px;">
+            <strong style="display: block; margin-bottom: 4px;">🚀 操作步骤</strong>
+            <div style="margin: 0; line-height: 1.8; font-size: 13px; color: #666;">
+              • 点击按钮复制文字后直接在小黑盒粘贴即可。 <br>
+              • 代码块与表格图片，特殊情况时，可右键图片手动复制粘贴。
+            </div>
           </div>
         </div>
       </div>
@@ -896,6 +917,12 @@
 
 这是一个专为小黑盒社区设计的转换工具。在“源码编辑”栏编写内容，通过“实时预览”查看样式，最终在“导出转换”栏获取可以直接发布到小黑盒的富文本成果。
 
+项目部署：[evgo2017.com/project/xiaoheihe-editor](https://evgo2017.com/project/xiaoheihe-editor)
+
+项目维护主页：[evgo2017.com/blog/xiaoheihe-editor](https://evgo2017.com/blog/xiaoheihe-editor)
+
+源码仓库：[github.com/evgo2017/xiaoheihe-editor](https://github.com/evgo2017/xiaoheihe-editor)
+
 ## 1. 基础排版 (Common Formats)
 
 **粗体文字**、*斜体文字*、~~删除线~~。
@@ -935,20 +962,23 @@ function generateCodeBlockImage(code, language) {
 }
 \`\`\`
 
-### 4.2 表格转图片
+### 4.2 表格转图片 (支持多行换行)
 
-复杂的表格也会在“导出转换”栏中变成一张整洁的图片，且支持单元格内换行：
+复杂的表格也会在“导出转换”栏中变成一张整洁的图片，且支持单元格内自动换行：
 
-| 功能名称 | 技术实现 | 导出效果 |
+| 功能名称 | 技术实现细节 | 导出预览效果 |
 | :--- | :--- | :--- |
-| **代码高亮** | 自定义 Canvas 渲染 | 🖼️ 自动转为图片 |
-| **表格内换行** | 自动文本换行引擎 | 🖼️ 自动转为图片 |
-| **格式平铺** | 正则表达式重构 | **统一加粗显示** |
-| **引号优化** | 自动提取引号外置 | “**效果更佳**” |
+| **超长文本换行** | 这是一个超长文本测试，用于演示表格内部如何根据列宽自动进行换行排版，确保在移动端阅读时内容完整不溢出。 | 🖼️ 自动换行预览 |
+| **代码高亮** | 自定义 Canvas 渲染引擎 | 🖼️ 自动转为图片 |
+| **格式平铺** | 正则表达式重写所有节点 | **统一加粗显示** |
+| **引号优化** | **“提取引号外置”** -> “**提取引号外置**” | 自动优化排版 |
+| **本地图片** | ![本地图片](assets/example.png) | 生成路径占位符 |
 
 ## 5. 导出说明
 
-转换后的所有行内格式（代码、斜体、删除线）都会被平铺为**粗体**。图片链接如果是本地路径，会自动转为占位符提示，方便手动定位插入。
+- **格式平铺**：转换后的所有行内格式（代码、斜体、删除线）都会被平铺为**粗体**。
+- **引号外置**：如果你在粗体中使用引号，如 \*\*“测试”\*\*，它会自动优化为 “\*\*测试\*\*”。
+- **本地图片**：图片链接如果是本地路径，会自动转为占位符提示，方便手动定位插入。
 
 > **💡 复制小贴士**
 > 
