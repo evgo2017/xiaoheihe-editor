@@ -4,12 +4,17 @@
   "description": "Markdown editor with ProseMirror",
   "type": "module",
   "scripts": {
-    "dev": "npx serve ."
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "prosemirror-example-setup": "^1.2.1",
     "prosemirror-markdown": "^1.9.1",
     "prosemirror-state": "^1.4.1",
     "prosemirror-view": "^1.23.6"
+  },
+  "devDependencies": {
+    "vite": "^7.3.1"
   }
 }

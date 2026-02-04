@@ -14,12 +14,97 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       margin: 0;
       padding: 16px;
-      background: #f5f5f5;
+      /* background: #f5f5f5; */
+      /* Moved to specific background for better look */
+      background-color: #f5f5f5;
       line-height: 1.6;
       height: 100vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+    }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      body {
+        height: auto;
+        overflow-y: auto;
+        padding: 12px;
+        padding-bottom: 48px;
+        /* For status bar */
+      }
+
+      .app-header {
+        display: flex !important;
+        flex-direction: column;
+        height: auto;
+        gap: 12px;
+      }
+
+      .header-controls {
+        width: 100%;
+        order: 3;
+      }
+
+      .column-toggles {
+        display: flex;
+        width: 100%;
+      }
+
+      .column-toggle {
+        flex: 1;
+        text-align: center;
+      }
+
+      .header-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        order: 2;
+      }
+
+      .app-title {
+        justify-content: center;
+      }
+
+      .app-description {
+        white-space: normal !important;
+        text-align: center;
+      }
+
+      .editor-wrapper {
+        flex-direction: column;
+        overflow: visible !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        gap: 16px !important;
+      }
+
+      .editor-pane {
+        border-right: none !important;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        height: 500px;
+        flex: none !important;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Adjust export pane height if needed, but 500px is safe start */
+
+      .status-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Hide ID on mobile to save space */
+      .header-id {
+        display: none;
+      }
     }
 
     /* Column Toggles - Premium Segmented Control */
@@ -64,6 +149,53 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
+    margin: 0 0 4px 0;
+    font-size: 20px;
+    }
+
+    /* Refactored Header Classes */
+    .app-header {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 16px;
+      flex-shrink: 0;
+      /* from old header selector */
+    }
+
+    .app-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+      font-size: 20px;
+      white-space: nowrap;
+      color: #333;
+      /* H1 color */
+    }
+
+    .app-description {
+      color: #666;
+      font-size: 13px;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-controls {
+      justify-self: center;
+    }
+
+    .header-links {
+      display: flex;
+      align-items: center;
+      justify-self: end;
+      gap: 16px;
+    }
+
+    /* header selector in CSS was:
     header {
       flex-shrink: 0;
       margin-bottom: 12px;
@@ -71,12 +203,8 @@
       justify-content: space-between;
       align-items: flex-start;
     }
-
-    h1 {
-      color: #333;
-      margin: 0 0 4px 0;
-      font-size: 20px;
-    }
+    But inline style overrode it. I will remove the vague header selector and rely on .app-header
+    */
 
     .description {
       color: #666;
@@ -826,17 +954,15 @@
 </head>
 
 <body>
-  <header
-    style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 12px; gap: 16px;">
+  <header class="app-header">
     <div style="min-width: 0;">
-      <h1
-        style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px; font-size: 20px; white-space: nowrap;">
+      <h1 class="app-title">
         📦 小黑盒文章编辑器</h1>
-      <p class="description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">一键将 Markdown
+      <p class="app-description">一键将 Markdown
         转换为适合小黑盒发布的富文本内容，支持代码高亮与表格转图。</p>
     </div>
 
-    <div class="column-toggles" style="justify-self: center;">
+    <div class="column-toggles header-controls">
       <label class="column-toggle">
         <input type="checkbox" id="toggle-source" checked> 源码编辑
       </label>
@@ -848,8 +974,8 @@
       </label>
     </div>
 
-    <div style="display: flex; align-items: center; justify-self: end; gap: 16px;">
-      <span style="font-size: 13px; color: #666;">小黑盒 ID: 93365144</span>
+    <div class="header-links">
+      <span class="header-id" style="font-size: 13px; color: #666;">小黑盒 ID: 93365144</span>
       <a href="https://evgo2017.com/project/xiaoheihe-editor" target="_blank" class="header-link">项目主页</a>
       <a href="https://github.com/evgo2017/xiaoheihe-editor" target="_blank" class="header-link">源码仓库</a>
       <button class="help-btn" id="helpBtn">语法帮助</button>
@@ -998,36 +1124,7 @@
   </div>
 
   <!-- Import Map -->
-  <script type="importmap">
-  {
-    "imports": {
-      "prosemirror-view": "./node_modules/prosemirror-view/dist/index.js",
-      "prosemirror-state": "./node_modules/prosemirror-state/dist/index.js",
-      "prosemirror-markdown": "./node_modules/prosemirror-markdown/dist/index.js",
-      "prosemirror-example-setup": "./node_modules/prosemirror-example-setup/dist/index.js",
-      "prosemirror-model": "./node_modules/prosemirror-model/dist/index.js",
-      "prosemirror-transform": "./node_modules/prosemirror-transform/dist/index.js",
-      "prosemirror-commands": "./node_modules/prosemirror-commands/dist/index.js",
-      "prosemirror-keymap": "./node_modules/prosemirror-keymap/dist/index.js",
-      "prosemirror-schema-list": "./node_modules/prosemirror-schema-list/dist/index.js",
-      "prosemirror-history": "./node_modules/prosemirror-history/dist/index.js",
-      "prosemirror-dropcursor": "./node_modules/prosemirror-dropcursor/dist/index.js",
-      "prosemirror-gapcursor": "./node_modules/prosemirror-gapcursor/dist/index.js",
-      "prosemirror-menu": "./node_modules/prosemirror-menu/dist/index.js",
-      "prosemirror-inputrules": "./node_modules/prosemirror-inputrules/dist/index.js",
-      "crelt": "./node_modules/crelt/index.js",
-      "orderedmap": "./node_modules/orderedmap/dist/index.js",
-      "rope-sequence": "./node_modules/rope-sequence/dist/index.js",
-      "w3c-keyname": "./node_modules/w3c-keyname/index.js",
-      "markdown-it": "./node_modules/markdown-it/index.mjs",
-      "entities": "./node_modules/entities/lib/esm/index.js",
-      "linkify-it": "./node_modules/linkify-it/index.mjs",
-      "mdurl": "./node_modules/mdurl/index.mjs",
-      "punycode.js": "./node_modules/punycode.js/punycode.es6.js",
-      "uc.micro": "./node_modules/uc.micro/index.mjs"
-    }
-  }
-  </script>
+
 
   <script type="module">
     import { EditorView } from 'prosemirror-view';
