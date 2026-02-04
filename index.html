@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,7 @@
     * {
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       margin: 0;
@@ -20,7 +21,7 @@
       flex-direction: column;
       overflow: hidden;
     }
-    
+
     header {
       flex-shrink: 0;
       margin-bottom: 12px;
@@ -28,19 +29,19 @@
       justify-content: space-between;
       align-items: flex-start;
     }
-    
+
     h1 {
       color: #333;
       margin: 0 0 4px 0;
       font-size: 20px;
     }
-    
+
     .description {
       color: #666;
       font-size: 13px;
       margin: 0;
     }
-    
+
     .help-btn {
       padding: 8px 16px;
       background: #fafafa;
@@ -54,12 +55,12 @@
       gap: 6px;
       transition: all 0.2s;
     }
-    
+
     .help-btn:hover {
       background: #f0f0f0;
       border-color: #ccc;
     }
-    
+
     .help-btn::before {
       content: "?";
       display: inline-flex;
@@ -73,7 +74,7 @@
       font-size: 11px;
       font-weight: bold;
     }
-    
+
     /* 弹窗容器 */
     .modal-overlay {
       display: none;
@@ -82,21 +83,21 @@
       right: 16px;
       z-index: 1000;
     }
-    
+
     .modal-overlay.active {
       display: block;
     }
-    
+
     /* 弹窗 */
     .modal {
       background: white;
       border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
       width: 320px;
       overflow: hidden;
       border: 1px solid #e0e0e0;
     }
-    
+
     .modal-header {
       padding: 14px 16px;
       background: #fafafa;
@@ -105,13 +106,13 @@
       justify-content: space-between;
       align-items: center;
     }
-    
+
     .modal-title {
       font-size: 14px;
       font-weight: 500;
       color: #333;
     }
-    
+
     .modal-close {
       width: 24px;
       height: 24px;
@@ -127,22 +128,22 @@
       line-height: 1;
       padding: 0;
     }
-    
+
     .modal-close:hover {
       background: #e0e0e0;
       color: #666;
     }
-    
+
     .modal-body {
       padding: 12px 16px;
     }
-    
+
     .syntax-list {
       list-style: none;
       margin: 0;
       padding: 0;
     }
-    
+
     .syntax-item {
       display: flex;
       align-items: center;
@@ -150,11 +151,11 @@
       padding: 10px 0;
       border-bottom: 1px solid #f0f0f0;
     }
-    
+
     .syntax-item:last-child {
       border-bottom: none;
     }
-    
+
     .syntax-icon {
       width: 24px;
       height: 24px;
@@ -165,13 +166,13 @@
       font-size: 14px;
       flex-shrink: 0;
     }
-    
+
     .syntax-name {
       flex: 1;
       font-size: 13px;
       color: #333;
     }
-    
+
     .syntax-code {
       font-family: "SF Mono", Monaco, "Cascadia Code", Consolas, monospace;
       font-size: 12px;
@@ -180,7 +181,7 @@
       padding: 4px 8px;
       border-radius: 4px;
     }
-    
+
     .editor-wrapper {
       flex: 1;
       display: flex;
@@ -188,10 +189,10 @@
       min-height: 0;
       background: white;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       overflow: hidden;
     }
-    
+
     .editor-pane {
       flex: 1;
       display: flex;
@@ -199,11 +200,11 @@
       min-width: 0;
       overflow: hidden;
     }
-    
+
     .editor-pane:first-child {
       border-right: 1px solid #e0e0e0;
     }
-    
+
     .pane-header {
       padding: 10px 16px;
       background: #fafafa;
@@ -216,7 +217,7 @@
       gap: 8px;
       flex-shrink: 0;
     }
-    
+
     .pane-header::before {
       content: "";
       display: inline-block;
@@ -225,13 +226,13 @@
       border-radius: 50%;
       background: #4caf50;
     }
-    
+
     .editor-container {
       flex: 1;
       position: relative;
       overflow: hidden;
     }
-    
+
     /* Markdown 文本框样式 */
     .editor-container textarea {
       width: 100%;
@@ -246,7 +247,7 @@
       background: #fff;
       overflow-y: auto;
     }
-    
+
     /* ProseMirror 编辑器样式 */
     .ProseMirror {
       position: relative;
@@ -261,43 +262,51 @@
       font-variant-ligatures: none;
       font-feature-settings: "liga" 0;
     }
-    
+
     .ProseMirror p {
       margin: 0 0 1em 0;
     }
-    
-    .ProseMirror h1, 
-    .ProseMirror h2, 
-    .ProseMirror h3, 
+
+    .ProseMirror h1,
+    .ProseMirror h2,
+    .ProseMirror h3,
     .ProseMirror h4 {
       margin: 1.2em 0 0.5em 0;
       line-height: 1.3;
     }
-    
-    .ProseMirror h1 { font-size: 1.8em; }
-    .ProseMirror h2 { font-size: 1.5em; }
-    .ProseMirror h3 { font-size: 1.25em; }
-    
-    .ProseMirror ul, 
+
+    .ProseMirror h1 {
+      font-size: 1.8em;
+    }
+
+    .ProseMirror h2 {
+      font-size: 1.5em;
+    }
+
+    .ProseMirror h3 {
+      font-size: 1.25em;
+    }
+
+    .ProseMirror ul,
     .ProseMirror ol {
       padding-left: 2em;
       margin: 0 0 1em 0;
     }
-    
+
     .ProseMirror blockquote {
       border-left: 3px solid #ddd;
       padding-left: 1em;
       margin: 0 0 1em 0;
       color: #666;
     }
-    
+
     .ProseMirror pre {
       background: #f4f4f4;
       padding: 1em;
       border-radius: 4px;
       overflow-x: auto;
     }
-    
+
     .ProseMirror code {
       background: #f4f4f4;
       padding: 0.2em 0.4em;
@@ -305,49 +314,49 @@
       font-family: monospace;
       font-size: 0.9em;
     }
-    
+
     .ProseMirror pre code {
       background: none;
       padding: 0;
     }
-    
+
     .ProseMirror a {
       color: #0066cc;
       text-decoration: none;
     }
-    
+
     .ProseMirror a:hover {
       text-decoration: underline;
     }
-    
+
     .ProseMirror hr {
       border: none;
       border-top: 2px solid #ddd;
       margin: 2em 0;
     }
-    
+
     .ProseMirror img {
       max-width: 100%;
       height: auto;
     }
-    
+
     .ProseMirror table {
       border-collapse: collapse;
       width: 100%;
       margin: 1em 0;
     }
-    
-    .ProseMirror td, 
+
+    .ProseMirror td,
     .ProseMirror th {
       border: 1px solid #ddd;
       padding: 8px 12px;
       text-align: left;
     }
-    
+
     .ProseMirror th {
       background: #f5f5f5;
     }
-    
+
     /* ProseMirror 菜单样式 */
     .ProseMirror-menubar {
       border-bottom: 1px solid #e0e0e0;
@@ -355,27 +364,27 @@
       background: #fafafa;
       flex-shrink: 0;
     }
-    
+
     .ProseMirror-menubar-wrapper {
       display: flex;
       flex-direction: column;
       height: 100%;
     }
-    
-    .ProseMirror-menubar-wrapper > .ProseMirror {
+
+    .ProseMirror-menubar-wrapper>.ProseMirror {
       flex: 1;
       overflow-y: auto;
     }
-    
+
     .ProseMirror-menubar-wrapper .ProseMirror {
       padding-top: 10px;
     }
-    
+
     .ProseMirror-menuitem {
       display: inline-block;
       margin-right: 3px;
     }
-    
+
     .ProseMirror-menuseparator {
       display: inline-block;
       margin: 0 4px;
@@ -383,38 +392,38 @@
       height: 20px;
       vertical-align: middle;
     }
-    
+
     .ProseMirror-icon {
       display: inline-block;
       padding: 4px 8px;
       cursor: pointer;
       border-radius: 3px;
     }
-    
+
     .ProseMirror-icon:hover {
       background: #e0e0e0;
     }
-    
+
     .ProseMirror-icon svg {
       fill: currentColor;
       width: 16px;
       height: 16px;
       vertical-align: middle;
     }
-    
+
     .ProseMirror-menu-active {
       background: #ddd;
     }
-    
+
     .ProseMirror-prompt {
       position: absolute;
       background: white;
       padding: 15px;
       border-radius: 6px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
       z-index: 100;
     }
-    
+
     .ProseMirror-prompt input[type="text"] {
       padding: 6px 10px;
       border: 1px solid #ddd;
@@ -422,12 +431,12 @@
       margin-right: 8px;
       width: 250px;
     }
-    
+
     .ProseMirror-prompt-buttons {
       margin-top: 10px;
       text-align: right;
     }
-    
+
     .ProseMirror-prompt-buttons button {
       padding: 6px 16px;
       margin-left: 8px;
@@ -435,33 +444,33 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    
+
     .ProseMirror-prompt-buttons button[type="submit"] {
       background: #0066cc;
       color: white;
     }
-    
+
     .ProseMirror-prompt-buttons button[type="button"] {
       background: #e0e0e0;
       color: #333;
     }
-    
+
     /* 选中样式 */
     .ProseMirror-selectednode {
       outline: 2px solid #8cf;
     }
-    
+
     .ProseMirror ::selection {
       background: #b3d4fc;
     }
-    
+
     /* GapCursor */
     .ProseMirror-gapcursor {
       display: none;
       pointer-events: none;
       position: absolute;
     }
-    
+
     .ProseMirror-gapcursor:after {
       content: "";
       display: block;
@@ -471,89 +480,70 @@
       border-top: 1px solid black;
       animation: ProseMirror-cursor-blink 1.1s steps(2, start) infinite;
     }
-    
+
     @keyframes ProseMirror-cursor-blink {
-      to { visibility: hidden; }
+      to {
+        visibility: hidden;
+      }
     }
-    
+
     .ProseMirror-focused .ProseMirror-gapcursor {
       display: block;
     }
-    
+
     /* Drop cursor */
     .ProseMirror-dropcursor {
       background: #666;
       width: 2px;
       pointer-events: none;
     }
-    
-    /* 导出悬浮按钮 */
-    .export-fab {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 24px;
-      background: #0066cc;
-      color: white;
-      border: none;
-      border-radius: 24px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+
+    /* Tabs styling */
+    .tabs {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      z-index: 100;
+      gap: 4px;
+    }
+
+    .tab {
+      padding: 4px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #666;
       transition: all 0.2s;
     }
-    
-    .export-fab:hover {
-      background: #0052a3;
-      box-shadow: 0 6px 16px rgba(0,102,204,0.4);
+
+    .tab:hover {
+      background: #eee;
+      color: #333;
     }
-    
-    /* 导出预览弹窗遮罩 - 全屏遮罩 */
-    .export-modal-overlay {
+
+    .tab.active {
+      background: #e6f0ff;
+      color: #0066cc;
+      font-weight: 600;
+    }
+
+    .tab-content {
       display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 200;
-      justify-content: center;
-      align-items: center;
+      flex: 1;
+      flex-direction: column;
+      overflow: hidden;
+      height: 100%;
     }
-    
-    .export-modal-overlay.active {
+
+    .tab-content.active {
       display: flex;
     }
-    
-    /* 导出预视弹窗 */
-    .export-modal {
-      width: 80%;
-      max-width: 800px;
-      max-height: 80vh;
-      margin: auto;
-    }
-    
-    .export-modal .modal-body {
-      max-height: calc(80vh - 50px);
-      overflow-y: auto;
-    }
-    
+
     /* 导出编辑器容器 */
     .export-editor-container {
-      height: 50vh;
-      border: 1px solid #e0e0e0;
-      border-radius: 6px;
+      flex: 1;
       overflow: hidden;
       background: white;
+      position: relative;
     }
-    
+
     .export-editor-container .ProseMirror {
       height: 100%;
       padding: 16px;
@@ -564,7 +554,7 @@
       font-size: 14px;
       line-height: 1.6;
     }
-    
+
     /* 图片占位符样式 */
     .image-placeholder-node {
       background: #f5f5f5;
@@ -576,26 +566,30 @@
       color: #999;
       font-size: 13px;
     }
-    
+
     .image-placeholder-node.code-block {
       background: #f4f4f4;
       border-style: solid;
       font-family: monospace;
     }
-    
+
+    .export-footer {
+      padding: 12px 16px;
+      border-top: 1px solid #e0e0e0;
+      background: #fafafa;
+    }
+
     /* 导出操作区域 */
     .export-actions {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #e0e0e0;
       display: flex;
       align-items: center;
       gap: 16px;
       flex-wrap: wrap;
+      margin-bottom: 12px;
     }
-    
+
     .export-copy-btn {
-      padding: 10px 20px;
+      padding: 8px 16px;
       background: #0066cc;
       color: white;
       border: none;
@@ -608,24 +602,24 @@
       gap: 8px;
       transition: all 0.2s;
     }
-    
+
     .export-copy-btn:hover {
       background: #0052a3;
     }
-    
+
     .export-copy-btn.copied {
       background: #4caf50;
     }
-    
+
     .copy-icon {
       font-size: 16px;
     }
-    
+
     .copy-hint {
       font-size: 12px;
       color: #999;
     }
-    
+
     /* 图片复制提示 */
     .image-copy-hint {
       margin-top: 12px;
@@ -637,26 +631,27 @@
       color: #92400e;
       width: 100%;
     }
-    
+
     .image-copy-hint strong {
       display: block;
       margin-bottom: 4px;
     }
-    
+
     /* 编辑器内图片悬停效果 */
     .export-editor-container .ProseMirror img {
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
       border: 2px solid transparent;
     }
-    
+
     .export-editor-container .ProseMirror img:hover {
       transform: scale(1.02);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       border-color: #0066cc;
     }
   </style>
 </head>
+
 <body>
   <header>
     <div>
@@ -730,43 +725,41 @@
     </div>
   </div>
 
-  <!-- 导出预览弹窗 -->
-  <div class="export-modal-overlay" id="exportModalOverlay">
-    <div class="modal export-modal">
-      <div class="modal-header">
-        <span class="modal-title">导出预览</span>
-        <button class="modal-close" id="exportModalClose">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div id="export-editor" class="export-editor-container"></div>
-        <div class="export-actions">
-          <button class="export-copy-btn" id="exportCopyBtn">
-            <span class="copy-icon">📋</span> 复制内容到剪贴板
-          </button>
-          <span class="copy-hint">文字内容会自动粘贴</span>
-        </div>
-        <div class="image-copy-hint">
-          <strong>💡 图片上传说明</strong>
-          由于小黑盒编辑器限制，请<strong>点击下方图片</strong>→<strong>右键复制图片</strong>→在小黑盒编辑器中粘贴
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 导出按钮 -->
-  <button class="export-fab" id="exportBtn">导出预览</button>
-  
   <div class="editor-wrapper">
     <!-- 左侧：Markdown 源码 -->
     <div class="editor-pane">
       <div class="pane-header">Markdown 源码</div>
       <div id="markdown-editor" class="editor-container"></div>
     </div>
-    
-    <!-- 右侧：可视编辑 -->
+
+    <!-- 右侧：带 Tab 切换 -->
     <div class="editor-pane">
-      <div class="pane-header">可视编辑</div>
-      <div id="wysiwyg-editor" class="editor-container"></div>
+      <div class="pane-header">
+        <div class="tabs">
+          <div class="tab active" data-tab="preview">可视编辑</div>
+          <div class="tab" data-tab="export">导出预览</div>
+        </div>
+      </div>
+
+      <!-- 可视编辑 Tab -->
+      <div id="wysiwyg-editor" class="editor-container tab-content active" data-tab="preview"></div>
+
+      <!-- 导出预览 Tab -->
+      <div id="export-tab-content" class="tab-content" style="background: #fff;" data-tab="export">
+        <div id="export-editor" class="export-editor-container"></div>
+        <div class="export-footer">
+          <div class="export-actions">
+            <button class="export-copy-btn" id="exportCopyBtn">
+              <span class="copy-icon">📋</span> 复制内容到剪贴板
+            </button>
+            <span class="copy-hint">文字内容会自动粘贴</span>
+          </div>
+          <div class="image-copy-hint" style="margin-top: 0;">
+            <strong>💡 图片上传说明</strong>
+            由于小黑盒编辑器限制，请<strong>点击下方图片</strong>→<strong>右键复制图片</strong>→在小黑盒编辑器中粘贴
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -847,10 +840,10 @@ function hello() {
         this.textarea.value = content;
         this.textarea.spellcheck = false;
         target.appendChild(this.textarea);
-        
+
         this.onChange = onChange;
         this.debounceTimer = null;
-        
+
         this.textarea.addEventListener('input', () => {
           clearTimeout(this.debounceTimer);
           this.debounceTimer = setTimeout(() => {
@@ -893,16 +886,13 @@ function hello() {
         if (!doc) {
           doc = schema.node("doc", null, [schema.node("paragraph")]);
         }
-        
+
         this.view = new EditorView(target, {
           state: EditorState.create({
             doc: doc,
             plugins: exampleSetup({ schema, menuBar: false })
           }),
-          editable: () => false,
-          dispatchTransaction: () => {
-            // 只读，不处理交易
-          }
+          editable: () => false // Read only
         });
       }
 
@@ -928,26 +918,23 @@ function hello() {
     const helpBtn = document.getElementById('helpBtn');
     const modalOverlay = document.getElementById('modalOverlay');
     const modalClose = document.getElementById('modalClose');
-    
+
     helpBtn.addEventListener('click', () => {
       modalOverlay.classList.add('active');
     });
-    
+
     modalClose.addEventListener('click', () => {
       modalOverlay.classList.remove('active');
     });
-    
+
     // 导出预览
-    const exportBtn = document.getElementById('exportBtn');
-    const exportModalOverlay = document.getElementById('exportModalOverlay');
-    const exportModalClose = document.getElementById('exportModalClose');
     const exportEditorTarget = document.getElementById('export-editor');
-    
+
     // 将代码块生成图片
     function generateCodeBlockImage(codeContent, language = '') {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      
+
       // 设置画布尺寸
       const padding = 20;
       const lineHeight = 24;
@@ -955,19 +942,19 @@ function hello() {
       const lines = codeContent.split('\n');
       const displayLines = lines.slice(0, 20); // 最多显示20行
       const height = padding * 2 + displayLines.length * lineHeight + (language ? 30 : 0);
-      
+
       canvas.width = maxWidth;
       canvas.height = height;
-      
+
       // 背景
       ctx.fillStyle = '#f5f5f5';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
+
       // 边框
       ctx.strokeStyle = '#e0e0e0';
       ctx.lineWidth = 1;
       ctx.strokeRect(0, 0, canvas.width, canvas.height);
-      
+
       // 语言标签
       if (language) {
         ctx.fillStyle = '#e0e0e0';
@@ -978,57 +965,57 @@ function hello() {
         ctx.fillText(language, 40, 17);
         ctx.textAlign = 'left';
       }
-      
+
       // 代码内容
       ctx.fillStyle = '#333';
       ctx.font = '14px "SF Mono", Monaco, Consolas, monospace';
       const startY = padding + (language ? 30 : 0);
-      
+
       displayLines.forEach((line, index) => {
         const displayLine = line.length > 60 ? line.substring(0, 57) + '...' : line;
         ctx.fillText(displayLine, padding, startY + index * lineHeight);
       });
-      
+
       if (lines.length > 20) {
         ctx.fillStyle = '#999';
         ctx.fillText(`... 还有 ${lines.length - 20} 行`, padding, startY + displayLines.length * lineHeight);
       }
-      
+
       return canvas.toDataURL('image/png');
     }
-    
+
     // 将表格生成图片
     function generateTableImage(tableData) {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      
+
       const padding = 12;
       const cellPadding = 10;
       const rowHeight = 36;
       const maxWidth = 560;
-      
+
       // 计算列宽
       const colCount = tableData[0].length;
       const colWidth = Math.floor((maxWidth - padding * 2) / colCount);
-      
+
       const height = padding * 2 + tableData.length * rowHeight;
       canvas.width = maxWidth;
       canvas.height = height;
-      
+
       // 背景
       ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
+
       // 绘制表格
       tableData.forEach((row, rowIndex) => {
         const y = padding + rowIndex * rowHeight;
-        
+
         // 表头背景
         if (rowIndex === 0) {
           ctx.fillStyle = '#f5f5f5';
           ctx.fillRect(padding, y, colCount * colWidth, rowHeight);
         }
-        
+
         // 行分隔线
         ctx.strokeStyle = '#e0e0e0';
         ctx.lineWidth = 1;
@@ -1036,7 +1023,7 @@ function hello() {
         ctx.moveTo(padding, y + rowHeight);
         ctx.lineTo(padding + colCount * colWidth, y + rowHeight);
         ctx.stroke();
-        
+
         // 列分隔线
         row.forEach((cell, colIndex) => {
           const x = padding + colIndex * colWidth;
@@ -1044,7 +1031,7 @@ function hello() {
           ctx.moveTo(x, y);
           ctx.lineTo(x, y + rowHeight);
           ctx.stroke();
-          
+
           // 单元格内容
           ctx.fillStyle = '#333';
           ctx.font = '13px -apple-system, sans-serif';
@@ -1053,33 +1040,33 @@ function hello() {
           const displayCell = cell.length > 15 ? cell.substring(0, 12) + '...' : cell;
           ctx.fillText(displayCell, x + cellPadding, y + rowHeight / 2);
         });
-        
+
         // 右边框
         ctx.beginPath();
         ctx.moveTo(padding + colCount * colWidth, y);
         ctx.lineTo(padding + colCount * colWidth, y + rowHeight);
         ctx.stroke();
       });
-      
+
       // 顶部和底部边框
       ctx.beginPath();
       ctx.moveTo(padding, padding);
       ctx.lineTo(padding + colCount * colWidth, padding);
       ctx.stroke();
-      
+
       ctx.beginPath();
       ctx.moveTo(padding, padding + tableData.length * rowHeight);
       ctx.lineTo(padding + colCount * colWidth, padding + tableData.length * rowHeight);
       ctx.stroke();
-      
+
       return canvas.toDataURL('image/png');
     }
-    
+
     // 解析表格
     function parseTable(markdown) {
       const lines = markdown.trim().split('\n');
       const tableData = [];
-      
+
       lines.forEach((line, index) => {
         if (index === 1 && line.includes('|-')) return; // 跳过分隔行
         const cells = line.split('|').filter(c => c.trim()).map(c => c.trim());
@@ -1087,14 +1074,14 @@ function hello() {
           tableData.push(cells);
         }
       });
-      
+
       return tableData;
     }
-    
+
     // 处理 Markdown 内容，生成图片并返回新的 Markdown
     async function processMarkdownForExport(markdown) {
       let processed = markdown;
-      
+
       // 1. 处理代码块
       const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
       let match;
@@ -1104,7 +1091,7 @@ function hello() {
         const imageUrl = generateCodeBlockImage(code, language);
         processed = processed.replace(match[0], `\n![代码块](${imageUrl})\n`);
       }
-      
+
       // 2. 处理表格
       const tableRegex = /\|[^\n]+\|[^\n]*(?:\n\|[-:]+[-|:]*\|[^\n]*)?(?:\n\|[^\n]+\|[^\n]*)*/g;
       const tables = markdown.match(tableRegex) || [];
@@ -1115,30 +1102,30 @@ function hello() {
           processed = processed.replace(tableMarkdown, `\n![表格](${imageUrl})\n`);
         }
       });
-      
+
       // 3. 将行内代码 `code` 转为 **code** 粗体
       processed = processed.replace(/`([^`]+)`/g, '**$1**');
-      
+
       // 4. 将超链接 [text](url) 转为 [text](url "text")
       processed = processed.replace(/\[([^\]]+)\]\(([^\s)]+)\)/g, (match, text, url) => {
         return `[${text}](${url} "${text}")`;
       });
-      
+
       return processed;
     }
-    
+
     let exportEditorView = null;
-    
+
     // 创建导出编辑器视图（只读）
     function createExportEditor(target, content) {
       // 如果已存在，先销毁
       if (exportEditorView) {
         exportEditorView.destroy();
       }
-      
+
       // 清空目标容器
       target.innerHTML = '';
-      
+
       // 解析 Markdown 内容
       let doc;
       try {
@@ -1147,7 +1134,7 @@ function hello() {
         console.warn('导出预览解析失败:', e);
         doc = schema.node("doc", null, [schema.node("paragraph")]);
       }
-      
+
       // 创建只读编辑器
       exportEditorView = new EditorView(target, {
         state: EditorState.create({
@@ -1159,7 +1146,7 @@ function hello() {
           // 只读，不处理交易
         }
       });
-      
+
       // 添加图片点击事件
       setTimeout(() => {
         const images = target.querySelectorAll('img');
@@ -1167,7 +1154,7 @@ function hello() {
           img.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            
+
             // 创建一个临时的图片元素用于复制
             const tempImg = document.createElement('img');
             tempImg.src = img.src;
@@ -1178,18 +1165,18 @@ function hello() {
               opacity: 0;
             `;
             document.body.appendChild(tempImg);
-            
+
             // 选中图片
             const range = document.createRange();
             range.selectNode(tempImg);
             const selection = window.getSelection();
             selection.removeAllRanges();
             selection.addRange(range);
-            
+
             // 尝试复制
             try {
               document.execCommand('copy');
-              
+
               // 显示提示
               const hint = document.createElement('div');
               hint.textContent = '图片已选中，请粘贴到小黑盒编辑器';
@@ -1207,38 +1194,52 @@ function hello() {
                 pointer-events: none;
               `;
               document.body.appendChild(hint);
-              
+
               setTimeout(() => {
                 document.body.removeChild(hint);
               }, 2000);
             } catch (err) {
               console.error('复制图片失败:', err);
             }
-            
+
             // 清理
             selection.removeAllRanges();
             document.body.removeChild(tempImg);
           });
         });
       }, 100);
-      
+
       return exportEditorView;
     }
-    
-    exportBtn.addEventListener('click', async () => {
-      const currentContent = mdView.content;
-      const processedContent = await processMarkdownForExport(currentContent);
-      createExportEditor(exportEditorTarget, processedContent);
-      exportModalOverlay.classList.add('active');
+
+    // Tab 切换逻辑
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', async () => {
+        const targetId = tab.dataset.tab;
+
+        // 更新 Tab 状态
+        tabs.forEach(t => t.classList.toggle('active', t === tab));
+
+        // 更新内容显示
+        tabContents.forEach(content => {
+          content.classList.toggle('active', content.dataset.tab === targetId);
+        });
+
+        // 如果切换到导出预览，生成内容
+        if (targetId === 'export') {
+          const currentContent = mdView.content;
+          const processedContent = await processMarkdownForExport(currentContent);
+          createExportEditor(exportEditorTarget, processedContent);
+        }
+      });
     });
-    
-    exportModalClose.addEventListener('click', () => {
-      exportModalOverlay.classList.remove('active');
-    });
-    
+
     // 复制到剪贴板功能
     const exportCopyBtn = document.getElementById('exportCopyBtn');
-    
+
     // 将 base64 图片转换为 Blob
     function base64ToBlob(base64) {
       const parts = base64.split(';base64,');
@@ -1251,27 +1252,27 @@ function hello() {
       }
       return new Blob([uInt8Array], { type: contentType });
     }
-    
+
     exportCopyBtn.addEventListener('click', async () => {
       if (!exportEditorView) return;
-      
+
       try {
         // 获取编辑器的 DOM 内容
         const editorDOM = exportEditorView.dom;
-        
+
         // 克隆 DOM 进行处理
         const clone = editorDOM.cloneNode(true);
-        
+
         // 处理图片：将 base64 图片添加到 clipboard items
         const images = [];
         const imgElements = clone.querySelectorAll('img');
-        
+
         imgElements.forEach((img, index) => {
           const src = img.getAttribute('src');
           if (src && src.startsWith('data:image')) {
             // 为图片添加标识便于跟踪
             img.setAttribute('data-image-id', `image-${index}`);
-            
+
             // 提取 base64 并转换为 blob
             const blob = base64ToBlob(src);
             images.push({
@@ -1281,7 +1282,7 @@ function hello() {
             });
           }
         });
-        
+
         // 创建 HTML 内容
         const htmlContent = `
           <html>
@@ -1290,7 +1291,7 @@ function hello() {
           </body>
           </html>
         `;
-        
+
         // 创建纯文本内容 - 从 Markdown 内容生成，移除所有图片语法
         // 获取当前 Markdown 内容
         let plainText = mdView.content;
@@ -1301,10 +1302,10 @@ function hello() {
         // 清理多余的空行
         plainText = plainText.replace(/\n\n+/g, '\n\n').trim();
         const textBlob = new Blob([plainText], { type: 'text/plain' });
-        
+
         // 构建 clipboard item data
         const itemData = {};
-        
+
         // 如果有图片，添加图片 blob 和 HTML
         if (images.length > 0) {
           images.forEach(img => {
@@ -1321,28 +1322,28 @@ function hello() {
           itemData['text/html'] = htmlBlob;
           itemData['text/plain'] = textBlob;
         }
-        
+
         // 使用 Clipboard API 写入
         const clipboardItem = new ClipboardItem(itemData);
         await navigator.clipboard.write([clipboardItem]);
-        
+
         // 显示成功状态
         const originalText = exportCopyBtn.innerHTML;
         exportCopyBtn.innerHTML = '<span class="copy-icon">✓</span> 已复制';
         exportCopyBtn.classList.add('copied');
-        
+
         setTimeout(() => {
           exportCopyBtn.innerHTML = originalText;
           exportCopyBtn.classList.remove('copied');
         }, 2000);
-        
+
       } catch (err) {
         console.error('复制失败:', err);
-        
+
         // 降级方案：使用传统选中复制
         try {
           const editorDOM = exportEditorView.dom;
-          
+
           // 创建隐藏容器
           const tempContainer = document.createElement('div');
           tempContainer.innerHTML = editorDOM.innerHTML;
@@ -1354,18 +1355,18 @@ function hello() {
             pointer-events: none;
           `;
           document.body.appendChild(tempContainer);
-          
+
           // 选中并复制
           const range = document.createRange();
           range.selectNodeContents(tempContainer);
           const selection = window.getSelection();
           selection.removeAllRanges();
           selection.addRange(range);
-          
+
           const successful = document.execCommand('copy');
           selection.removeAllRanges();
           document.body.removeChild(tempContainer);
-          
+
           if (successful) {
             const originalText = exportCopyBtn.innerHTML;
             exportCopyBtn.innerHTML = '<span class="copy-icon">✓</span> 已复制';
@@ -1382,17 +1383,25 @@ function hello() {
         }
       }
     });
-    
+
     // 初始化
     const mdTarget = document.querySelector("#markdown-editor");
     const pmTarget = document.querySelector("#wysiwyg-editor");
-    
-    const mdView = new MarkdownView(mdTarget, defaultContent, (content) => {
+
+    const mdView = new MarkdownView(mdTarget, defaultContent, async (content) => {
       // Markdown 编辑器修改时，同步到可视编辑器
       pmView.setContent(content);
+
+      // 如果当前是导出预览 Tab，也同步更新导出内容
+      const activeTab = document.querySelector('.tab.active');
+      if (activeTab && activeTab.dataset.tab === 'export') {
+        const processedContent = await processMarkdownForExport(content);
+        createExportEditor(exportEditorTarget, processedContent);
+      }
     });
-    
+
     const pmView = new ProseMirrorView(pmTarget, defaultContent);
   </script>
 </body>
+
 </html>
