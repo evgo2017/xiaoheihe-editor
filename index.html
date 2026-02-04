@@ -670,7 +670,21 @@
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
       border: 2px solid transparent;
+      display: block;
+      /* Ensure it behaves as a block to respect margins */
+      margin-bottom: 0;
+      /* Remove margin bottom for images */
     }
+
+    /* Paragraphs containing only images should have no margin */
+    .export-editor-container .ProseMirror p:has(> img:only-child) {
+      margin-bottom: 0;
+    }
+
+    /* Fallback for browsers not supporting :has - reduce margin for all paragraphs with images slightly? 
+       Actually, standard margin is 1em.
+       We can try to target paragraphs with images generally if :has fails, but :has is widely supported in modern browsers now.
+    */
 
     .export-editor-container .ProseMirror img:hover {
       transform: scale(1.02);
@@ -908,6 +922,7 @@ async function processMarkdownForExport(markdown) {
 ## 5. 常见问题
 
 > Q: 为什么导出的图片需要手动复制？
+> 
 > A: 受限于浏览器安全策略和小黑盒编辑器限制，图片需要手动右键复制。
 
 快去试试导出预览功能吧！🚀`;
@@ -1168,6 +1183,7 @@ async function processMarkdownForExport(markdown) {
         const language = match[1] || '';
         const code = match[2].trim();
         const imageUrl = generateCodeBlockImage(code, language);
+        // Add specific alt text to identify these images later
         processed = processed.replace(match[0], `\n![代码块](${imageUrl})\n`);
       }
 
@@ -1182,12 +1198,28 @@ async function processMarkdownForExport(markdown) {
         }
       });
 
-      // 3. 将行内代码 `code` 转为 **code** 粗体
-      processed = processed.replace(/`([^`]+)`/g, '**$1**');
+      // 3. 格式平铺：将行内代码、删除线、斜体都转换为 **粗体**
+
+      // 3.1 行内代码 `code` -> **code**
+      // Remove spaces around content if any, to ensure **bold** syntax works
+      processed = processed.replace(/`\s*([^`\n]+?)\s*`/g, '**$1**');
+
+      // 3.2 删除线 ~~text~~ -> **text**
+      processed = processed.replace(/~~([^~]+?)~~/g, '**$1**');
+
+      // 3.3 斜体 *text* -> **text** (Handle * and _)
+      // Note: This is a simple approximation. Nested formatting might be tricky.
+      // We try to catch single *, ensuring it's not **
+      processed = processed.replace(/(?<!\*)\*([^*]+?)\*(?!\*)/g, '**$1**');
+      processed = processed.replace(/(?<!_)_([^_]+?)_(?!_)/g, '**$1**');
 
       // 4. 将超链接 [text](url) 转为 [text](url "text")
-      processed = processed.replace(/\[([^\]]+)\]\(([^\s)]+)\)/g, (match, text, url) => {
-        return `[${text}](${url} "${text}")`;
+      // Ensure we don't double-add titles. 
+      // If the URL part doesn't have a quote, we add the title.
+      // Also trim the captured URL.
+      processed = processed.replace(/\[([^\]]+)\]\(([^)"]+)\)/g, (match, text, url) => {
+        const cleanUrl = url.trim();
+        return `[${text}](${cleanUrl} "${text}")`;
       });
 
       return processed;
@@ -1220,16 +1252,25 @@ async function processMarkdownForExport(markdown) {
           doc: doc,
           plugins: exampleSetup({ schema, menuBar: false })
         }),
-        editable: () => false,
-        dispatchTransaction: () => {
-          // 只读，不处理交易
-        }
+        editable: () => false // Read only
       });
 
-      // 添加图片点击事件
+      // Post-process DOM: Fix styles and add listeners
       setTimeout(() => {
         const images = target.querySelectorAll('img');
         images.forEach(img => {
+          // 1. Remove margins for purely generated images (Code Block & Table)
+          // We identify them by the alt text we set earlier.
+          if (img.alt === '代码块' || img.alt === '表格') {
+            const parentP = img.closest('p');
+            if (parentP) {
+              parentP.style.marginBottom = '0';
+              // Also ensure the line height doesn't add extra space
+              parentP.style.lineHeight = '0';
+            }
+          }
+
+          // 2. Add click listener for copy
           img.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -1286,7 +1327,7 @@ async function processMarkdownForExport(markdown) {
             document.body.removeChild(tempImg);
           });
         });
-      }, 100);
+      }, 50); // Small delay to ensure render
 
       return exportEditorView;
     }
