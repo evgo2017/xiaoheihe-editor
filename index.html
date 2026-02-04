@@ -1355,75 +1355,62 @@ async function processMarkdownForExport(markdown) {
       if (!exportEditorView) return;
 
       try {
-        // 获取编辑器的 DOM 内容
+        // Fallback to Selection-based copy which behaves exactly like manual user selection
+        // This is often more reliable for rich text editors than manual ClipboardItem construction
+
+        // 1. Get the export editor DOM
         const editorDOM = exportEditorView.dom;
 
-        // 克隆 DOM 进行处理
-        const clone = editorDOM.cloneNode(true);
-
-        // 处理图片：将 base64 图片添加到 clipboard items
-        const images = [];
-        const imgElements = clone.querySelectorAll('img');
-
-        imgElements.forEach((img, index) => {
-          const src = img.getAttribute('src');
-          if (src && src.startsWith('data:image')) {
-            // 为图片添加标识便于跟踪
-            img.setAttribute('data-image-id', `image-${index}`);
-
-            // 提取 base64 并转换为 blob
-            const blob = base64ToBlob(src);
-            images.push({
-              id: `image-${index}`,
-              blob: blob,
-              type: blob.type
-            });
-          }
-        });
-
-        // 创建 HTML 内容
-        const htmlContent = `
-          <html>
-          <body>
-            ${clone.innerHTML}
-          </body>
-          </html>
+        // 2. Clone it to a temporary hidden div so we can modify it safely (remove alts) without affecting view
+        const tempContainer = document.createElement('div');
+        tempContainer.innerHTML = editorDOM.innerHTML;
+        tempContainer.style.cssText = `
+          position: fixed;
+          left: -9999px;
+          top: 0;
+          opacity: 0;
+          pointer-events: none;
+          white-space: pre-wrap; /* Preserve formatting */
         `;
 
-        // 创建纯文本内容 - 从 Markdown 内容生成，移除所有图片语法
-        // 获取当前 Markdown 内容
-        let plainText = mdView.content;
-        // 移除所有 Markdown 图片语法 ![alt](url)
-        plainText = plainText.replace(/!\[.*?\]\(.*?\)/g, '');
-        // 移除 base64 图片 URL
-        plainText = plainText.replace(/!\[\s*\]\(data:image\/[^)]+\)/g, '');
+        // 3. Cleanup: Remove 'alt' from images in the temp container
+        const images = tempContainer.querySelectorAll('img');
+        images.forEach(img => {
+          img.removeAttribute('alt');
+        });
 
-        // 清理多余的空行
-        plainText = plainText.replace(/\n\n+/g, '\n\n').trim();
-        const textBlob = new Blob([plainText], { type: 'text/plain' });
-        const htmlBlob = new Blob([htmlContent], { type: 'text/html' });
+        document.body.appendChild(tempContainer);
 
-        // 构建 clipboard item data - 只包含 HTML 和 文本
-        const itemData = {
-          'text/html': htmlBlob,
-          'text/plain': textBlob
-        };
+        // 4. Select the temporary content
+        const range = document.createRange();
+        range.selectNodeContents(tempContainer);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
 
-        // 使用 Clipboard API 写入
-        const clipboardItem = new ClipboardItem(itemData);
-        await navigator.clipboard.write([clipboardItem]);
+        // 5. Execute Copy
+        const successful = document.execCommand('copy');
 
-        // 显示成功状态
-        const originalText = exportCopyBtn.innerHTML;
-        exportCopyBtn.innerHTML = '<span class="copy-icon">✓</span> 已复制';
-        exportCopyBtn.classList.add('copied');
+        // 6. Cleanup
+        selection.removeAllRanges();
+        document.body.removeChild(tempContainer);
 
-        setTimeout(() => {
-          exportCopyBtn.innerHTML = originalText;
-          exportCopyBtn.classList.remove('copied');
-        }, 2000);
+        if (successful) {
+          // 显示成功状态
+          const originalText = exportCopyBtn.innerHTML;
+          exportCopyBtn.innerHTML = '<span class="copy-icon">✓</span> 已复制';
+          exportCopyBtn.classList.add('copied');
+
+          setTimeout(() => {
+            exportCopyBtn.innerHTML = originalText;
+            exportCopyBtn.classList.remove('copied');
+          }, 2000);
+        } else {
+          throw new Error('execCommand copy failed');
+        }
 
       } catch (err) {
+
         console.error('复制失败:', err);
 
         // 降级方案：使用传统选中复制
