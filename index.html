@@ -881,12 +881,9 @@ function hello() {
       }
     }
 
-    // ProseMirror 视图
+    // ProseMirror 视图 - 只读预览
     class ProseMirrorView {
-      constructor(target, content, onChange) {
-        this.onChange = onChange;
-        this.debounceTimer = null;
-        
+      constructor(target, content) {
         let doc;
         try {
           doc = defaultMarkdownParser.parse(content);
@@ -900,44 +897,26 @@ function hello() {
         this.view = new EditorView(target, {
           state: EditorState.create({
             doc: doc,
-            plugins: exampleSetup({ schema, menuBar: true })
+            plugins: exampleSetup({ schema, menuBar: false })
           }),
-          dispatchTransaction: (tr) => {
-            const newState = this.view.state.apply(tr);
-            this.view.updateState(newState);
-            
-            if (tr.docChanged) {
-              clearTimeout(this.debounceTimer);
-              this.debounceTimer = setTimeout(() => {
-                this.onChange(this.content);
-              }, 300);
-            }
+          editable: () => false,
+          dispatchTransaction: () => {
+            // 只读，不处理交易
           }
         });
       }
 
-      get content() {
-        return defaultMarkdownSerializer.serialize(this.view.state.doc);
-      }
-
       setContent(content) {
-        const currentContent = this.content;
-        if (currentContent !== content) {
-          let newDoc;
-          try {
-            newDoc = defaultMarkdownParser.parse(content);
-          } catch (e) {
-            console.warn('Markdown 解析失败:', e);
-          }
-          if (newDoc) {
-            const tr = this.view.state.tr.replaceWith(0, this.view.state.doc.content.size, newDoc.content);
-            this.view.dispatch(tr);
-          }
+        let newDoc;
+        try {
+          newDoc = defaultMarkdownParser.parse(content);
+        } catch (e) {
+          console.warn('Markdown 解析失败:', e);
         }
-      }
-
-      focus() {
-        this.view.focus();
+        if (newDoc) {
+          const tr = this.view.state.tr.replaceWith(0, this.view.state.doc.content.size, newDoc.content);
+          this.view.dispatch(tr);
+        }
       }
 
       destroy() {
@@ -1408,23 +1387,12 @@ function hello() {
     const mdTarget = document.querySelector("#markdown-editor");
     const pmTarget = document.querySelector("#wysiwyg-editor");
     
-    let isSyncing = false;
-    
     const mdView = new MarkdownView(mdTarget, defaultContent, (content) => {
-      if (!isSyncing) {
-        isSyncing = true;
-        pmView.setContent(content);
-        isSyncing = false;
-      }
+      // Markdown 编辑器修改时，同步到可视编辑器
+      pmView.setContent(content);
     });
     
-    const pmView = new ProseMirrorView(pmTarget, defaultContent, (content) => {
-      if (!isSyncing) {
-        isSyncing = true;
-        mdView.setContent(content);
-        isSyncing = false;
-      }
-    });
+    const pmView = new ProseMirrorView(pmTarget, defaultContent);
   </script>
 </body>
 </html>
