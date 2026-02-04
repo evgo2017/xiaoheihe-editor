@@ -776,6 +776,16 @@
               <span class="syntax-name">超链接</span>
               <code class="syntax-code">添加 title</code>
             </li>
+            <li class="syntax-item">
+              <span class="syntax-icon">“</span>
+              <span class="syntax-name">粗体引号</span>
+              <code class="syntax-code">**“文字”** → “**文字**”</code>
+            </li>
+            <li class="syntax-item">
+              <span class="syntax-icon">🖼️</span>
+              <span class="syntax-name">本地图片</span>
+              <code class="syntax-code">生成图片信息占位符</code>
+            </li>
           </ul>
         </div>
       </div>
@@ -1340,7 +1350,18 @@ async function processMarkdownForExport(markdown) {
         }
       });
 
+      // 2.5 处理本地图片：将 ![img](assets/...) 等非 http/data 图片转为占位符文本
+      // This is helpful for manual insertion in target editor
+      processed = processed.replace(/!\[(.*?)\]\((?!http|data:)(.*?)\)/g, (match, alt, url) => {
+        return `\n（图片：${url}）\n`;
+      });
+
       // 3. 格式平铺：将行内代码、删除线、斜体都转换为 **粗体**
+
+      // 3.0 Special formatting: **“text”** -> “**text**” (Pull quotes out of bold)
+      // Supports both Chinese quotes “ ” and English quotes " "
+      processed = processed.replace(/\*\*“([^”]+)”\*\*/g, '“**$1**”');
+      processed = processed.replace(/\*\*"([^"]+)"\*\*/g, '"**$1**"');
 
       // 3.1 行内代码 `code` -> **code**
       // Remove spaces around content if any, to ensure **bold** syntax works
