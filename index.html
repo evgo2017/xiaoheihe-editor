@@ -1025,17 +1025,64 @@ async function processMarkdownForExport(markdown) {
     const exportEditorTarget = document.getElementById('export-editor');
 
     // 将代码块生成图片
-    function generateCodeBlockImage(codeContent, language = '') {
+    // Helper for Code Highlighting
+    function drawHighlightedCode(ctx, text, x, y) {
+      const tokenRegex = /(\/\/.*$)|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`)|(\b(?:function|return|if|else|for|while|const|let|var|async|await|import|export|class|new|this|try|catch|true|false|null|undefined|void|typeof|instanceof)\b)|(\b\d+\b)/;
+
+      let cursorX = x;
+      let remaining = text;
+
+      while (remaining.length > 0) {
+        const match = remaining.match(tokenRegex);
+        if (!match) {
+          ctx.fillStyle = '#333';
+          ctx.fillText(remaining, cursorX, y);
+          break;
+        }
+
+        const index = match.index;
+        if (index > 0) {
+          const pre = remaining.substring(0, index);
+          ctx.fillStyle = '#333';
+          ctx.fillText(pre, cursorX, y);
+          cursorX += ctx.measureText(pre).width;
+        }
+
+        const token = match[0];
+        if (match[1]) ctx.fillStyle = '#a0a1a7'; // Comment
+        else if (match[2]) ctx.fillStyle = '#50a14f'; // String
+        else if (match[3]) ctx.fillStyle = '#a626a4'; // Keyword
+        else if (match[4]) ctx.fillStyle = '#986801'; // Number
+        else ctx.fillStyle = '#333';
+
+        ctx.fillText(token, cursorX, y);
+        cursorX += ctx.measureText(token).width;
+
+        remaining = remaining.substring(index + token.length);
+      }
+    }
+
+    function generateCodeBlockImage(code, language) {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
 
-      // 设置画布尺寸
-      const padding = 20;
-      const lineHeight = 24;
-      const maxWidth = 560;
-      const lines = codeContent.split('\n');
-      const displayLines = lines.slice(0, 20); // 最多显示20行
-      const height = padding * 2 + displayLines.length * lineHeight + (language ? 30 : 0);
+      const padding = 16;
+      const lineHeight = 20;
+      const lines = code.split('\n');
+
+      // Calculate required width based on content
+      ctx.font = '14px "SF Mono", Monaco, Consolas, monospace';
+      let maxLineWidth = 0;
+      lines.forEach(line => {
+        const metrics = ctx.measureText(line);
+        if (metrics.width > maxLineWidth) {
+          maxLineWidth = metrics.width;
+        }
+      });
+
+      const maxWidth = Math.max(600, maxLineWidth + padding * 2 + 20);
+      // No truncation for lines or width now, as requested.
+      const height = padding * 2 + (language ? 30 : 0) + lines.length * lineHeight;
 
       canvas.width = maxWidth;
       canvas.height = height;
@@ -1052,11 +1099,11 @@ async function processMarkdownForExport(markdown) {
       // 语言标签
       if (language) {
         ctx.fillStyle = '#e0e0e0';
-        ctx.fillRect(0, 0, 80, 24);
+        ctx.fillRect(0, 0, canvas.width, 24);
         ctx.fillStyle = '#666';
         ctx.font = '12px -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(language, 40, 17);
+        ctx.textAlign = 'right';
+        ctx.fillText(language, canvas.width - 10, 16);
         ctx.textAlign = 'left';
       }
 
@@ -1065,17 +1112,40 @@ async function processMarkdownForExport(markdown) {
       ctx.font = '14px "SF Mono", Monaco, Consolas, monospace';
       const startY = padding + (language ? 30 : 0);
 
-      displayLines.forEach((line, index) => {
-        const displayLine = line.length > 60 ? line.substring(0, 57) + '...' : line;
-        ctx.fillText(displayLine, padding, startY + index * lineHeight);
+      lines.forEach((line, index) => {
+        drawHighlightedCode(ctx, line, padding, startY + index * lineHeight + 14);
       });
 
-      if (lines.length > 20) {
-        ctx.fillStyle = '#999';
-        ctx.fillText(`... 还有 ${lines.length - 20} 行`, padding, startY + displayLines.length * lineHeight);
-      }
-
       return canvas.toDataURL('image/png');
+    }
+
+    // Helper: Draw text with bold support
+    function drawRichText(ctx, text, x, y, maxWidth) {
+      // Split by markdown syntax
+      const parts = text.split(/(`[^`]+`|\*\*[^*]+\*\*|~~[^~]+~~|__[^_]+__)/g);
+      let currentX = x;
+      const baseFont = '13px -apple-system, sans-serif';
+      const boldFont = 'bold 13px -apple-system, sans-serif';
+
+      parts.forEach(part => {
+        let isBold = false;
+        let content = part;
+
+        if (part.startsWith('`') && part.endsWith('`')) {
+          isBold = true; content = part.slice(1, -1);
+        } else if (part.startsWith('**') && part.endsWith('**')) {
+          isBold = true; content = part.slice(2, -2);
+        } else if (part.startsWith('~~') && part.endsWith('~~')) {
+          isBold = true; content = part.slice(2, -2);
+        } else if (part.startsWith('__') && part.endsWith('__')) {
+          isBold = true; content = part.slice(2, -2);
+        }
+
+        ctx.font = isBold ? boldFont : baseFont;
+        ctx.fillStyle = '#333';
+        ctx.fillText(content, currentX, y);
+        currentX += ctx.measureText(content).width;
+      });
     }
 
     // 将表格生成图片
@@ -1121,18 +1191,19 @@ async function processMarkdownForExport(markdown) {
         // 列分隔线
         row.forEach((cell, colIndex) => {
           const x = padding + colIndex * colWidth;
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(x, y + rowHeight);
-          ctx.stroke();
+          if (colIndex < colCount) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x, y + rowHeight);
+            ctx.stroke();
+          }
 
           // 单元格内容
           ctx.fillStyle = '#333';
-          ctx.font = '13px -apple-system, sans-serif';
-          ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
-          const displayCell = cell.length > 15 ? cell.substring(0, 12) + '...' : cell;
-          ctx.fillText(displayCell, x + cellPadding, y + rowHeight / 2);
+
+          // Use Rich Text helper
+          drawRichText(ctx, cell, x + cellPadding, y + rowHeight / 2, colWidth - cellPadding * 2);
         });
 
         // 右边框
@@ -1142,15 +1213,10 @@ async function processMarkdownForExport(markdown) {
         ctx.stroke();
       });
 
-      // 顶部和底部边框
+      // 顶部边框
       ctx.beginPath();
       ctx.moveTo(padding, padding);
       ctx.lineTo(padding + colCount * colWidth, padding);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(padding, padding + tableData.length * rowHeight);
-      ctx.lineTo(padding + colCount * colWidth, padding + tableData.length * rowHeight);
       ctx.stroke();
 
       return canvas.toDataURL('image/png');
@@ -1162,8 +1228,12 @@ async function processMarkdownForExport(markdown) {
       const tableData = [];
 
       lines.forEach((line, index) => {
-        if (index === 1 && line.includes('|-')) return; // 跳过分隔行
-        const cells = line.split('|').filter(c => c.trim()).map(c => c.trim());
+        // Robust check for separator lines
+        if (/^[\s|:-]+$/.test(line)) return;
+
+        const content = line.trim().replace(/^\||\|$/g, '');
+        const cells = content.split('|').map(c => c.trim());
+
         if (cells.length > 0) {
           tableData.push(cells);
         }
