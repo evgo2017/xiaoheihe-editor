@@ -1,5 +1,8 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
-export default defineConfig({
-    base: '/project/xiaoheihe-editor/',
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd(), '');
+    return {
+        base: env.BASE_PATH || '/',
+    };
 });
