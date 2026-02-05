@@ -1649,13 +1649,12 @@ function generateCodeBlockImage(code, language) {
       processed = processed.replace(/(?<!\*)\*([^*]+?)\*(?!\*)/g, '**$1**');
       processed = processed.replace(/(?<!_)_([^_]+?)_(?!_)/g, '**$1**');
 
-      // 4. 将超链接 [text](url) 转为 [text](url "text")
-      // Ensure we don't double-add titles. 
-      // If the URL part doesn't have a quote, we add the title.
-      // Also trim the captured URL.
-      processed = processed.replace(/\[([^\]]+)\]\(([^)"]+)\)/g, (match, text, url) => {
+      // 4. 将超链接 [text](url) 转为 **text**（url）
+      // Modified to match user request: **text**（url）
+      processed = processed.replace(/(!?)\[([^\]]+)\]\(([^)"]+)\)/g, (match, prefix, text, url) => {
+        if (prefix === '!') return match; // Skip images
         const cleanUrl = url.trim();
-        return `[${text}](${cleanUrl} "${text}")`;
+        return `**${text}**（${cleanUrl}）`;
       });
 
       return processed;
