@@ -1126,7 +1126,7 @@
 
   <script type="module">
     import { EditorView } from 'prosemirror-view';
-    import { EditorState } from 'prosemirror-state';
+    import { EditorState, AllSelection } from 'prosemirror-state';
     import { schema, defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
     import { exampleSetup } from 'prosemirror-example-setup';
 
@@ -1898,52 +1898,24 @@ function generateCodeBlockImage(code, language) {
       return new Blob([uInt8Array], { type: contentType });
     }
 
-    exportCopyBtn.addEventListener('click', async () => {
+    exportCopyBtn.addEventListener('click', () => {
       if (!exportEditorView) return;
 
       try {
-        // Fallback to Selection-based copy which behaves exactly like manual user selection
-        // This is often more reliable for rich text editors than manual ClipboardItem construction
+        // Use ProseMirror's native Selection mechanism
+        // This triggers ProseMirror's DOMSerializer on copy, producing cleaner, schema-compliant HTML
+        const { state, dispatch } = exportEditorView;
+        const tr = state.tr.setSelection(new AllSelection(state.doc));
+        dispatch(tr);
 
-        // 1. Get the export editor DOM
-        const editorDOM = exportEditorView.dom;
+        // Focus the editor to ensure the browser recognizes the selection for the copy event
+        exportEditorView.focus();
 
-        // 2. Clone it to a temporary hidden div so we can modify it safely (remove alts) without affecting view
-        const tempContainer = document.createElement('div');
-        tempContainer.innerHTML = editorDOM.innerHTML;
-        tempContainer.style.cssText = `
-          position: fixed;
-          left: -9999px;
-          top: 0;
-          opacity: 0;
-          pointer-events: none;
-          white-space: pre-wrap; /* Preserve formatting */
-        `;
-
-        // 3. Cleanup: Remove 'alt' from images in the temp container
-        const images = tempContainer.querySelectorAll('img');
-        images.forEach(img => {
-          img.removeAttribute('alt');
-        });
-
-        document.body.appendChild(tempContainer);
-
-        // 4. Select the temporary content
-        const range = document.createRange();
-        range.selectNodeContents(tempContainer);
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-
-        // 5. Execute Copy
+        // Execute Copy
         const successful = document.execCommand('copy');
 
-        // 6. Cleanup
-        selection.removeAllRanges();
-        document.body.removeChild(tempContainer);
-
         if (successful) {
-          // 显示成功状态
+          // Show success state
           const originalText = exportCopyBtn.innerHTML;
           exportCopyBtn.innerHTML = '<span class="copy-icon">✓</span> 已复制';
           exportCopyBtn.classList.add('copied');
@@ -1957,50 +1929,9 @@ function generateCodeBlockImage(code, language) {
         }
 
       } catch (err) {
-
         console.error('复制失败:', err);
-
-        // 降级方案：使用传统选中复制
-        try {
-          const editorDOM = exportEditorView.dom;
-
-          // 创建隐藏容器
-          const tempContainer = document.createElement('div');
-          tempContainer.innerHTML = editorDOM.innerHTML;
-          tempContainer.style.cssText = `
-            position: fixed;
-            left: -9999px;
-            top: 0;
-            opacity: 0;
-            pointer-events: none;
-          `;
-          document.body.appendChild(tempContainer);
-
-          // 选中并复制
-          const range = document.createRange();
-          range.selectNodeContents(tempContainer);
-          const selection = window.getSelection();
-          selection.removeAllRanges();
-          selection.addRange(range);
-
-          const successful = document.execCommand('copy');
-          selection.removeAllRanges();
-          document.body.removeChild(tempContainer);
-
-          if (successful) {
-            const originalText = exportCopyBtn.innerHTML;
-            exportCopyBtn.innerHTML = '<span class="copy-icon">✓</span> 已复制';
-            exportCopyBtn.classList.add('copied');
-            setTimeout(() => {
-              exportCopyBtn.innerHTML = originalText;
-              exportCopyBtn.classList.remove('copied');
-            }, 2000);
-          } else {
-            throw new Error('Fallback copy failed');
-          }
-        } catch (fallbackErr) {
-          alert('复制失败，请尝试手动选中编辑器内容后复制');
-        }
+        // Fallback or alert
+        alert('复制失败，请尝试手动选中编辑器内容后复制');
       }
     });
   </script>
