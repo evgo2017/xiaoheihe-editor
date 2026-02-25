@@ -948,6 +948,337 @@
       color: #0066cc;
       text-decoration: underline;
     }
+
+    /* 图床设置弹窗 */
+    .settings-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .settings-overlay.active {
+      display: flex;
+    }
+
+    .settings-modal {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      width: 420px;
+      max-width: 90vw;
+      overflow: hidden;
+    }
+
+    .settings-header {
+      padding: 16px 20px;
+      background: #fafafa;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .settings-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .settings-close {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      color: #999;
+      font-size: 20px;
+      line-height: 1;
+      padding: 0;
+      transition: all 0.2s;
+    }
+
+    .settings-close:hover {
+      background: #e0e0e0;
+      color: #666;
+    }
+
+    .settings-body {
+      padding: 20px;
+    }
+
+    .settings-group {
+      margin-bottom: 20px;
+    }
+
+    .settings-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .settings-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .settings-select,
+    .settings-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+      background: white;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .settings-select:focus,
+    .settings-input:focus {
+      border-color: #0066cc;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+
+    .settings-hint {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .settings-test-btn {
+      padding: 8px 16px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .settings-test-btn:hover {
+      background: #0052a3;
+    }
+
+    .settings-test-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .settings-test-btn.success {
+      background: #4caf50;
+    }
+
+    .settings-test-btn.error {
+      background: #f44336;
+    }
+
+    .settings-footer {
+      padding: 14px 20px;
+      background: #fafafa;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .settings-save-btn {
+      padding: 8px 20px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .settings-save-btn:hover {
+      background: #0052a3;
+    }
+
+    /* 上传进度提示 */
+    .upload-status {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #666;
+      margin-left: 12px;
+    }
+
+    .upload-status.active {
+      display: inline-flex;
+    }
+
+    .upload-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #e0e0e0;
+      border-top-color: #0066cc;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Toast 提示 */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10001;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      pointer-events: auto;
+      animation: toastIn 0.3s ease, toastOut 0.3s ease forwards;
+      animation-delay: 0s, 3s;
+      max-width: 400px;
+      word-break: break-all;
+    }
+
+    .toast.success {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+
+    .toast.error {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+
+    .toast.info {
+      background: #eff6ff;
+      border: 1px solid #93c5fd;
+      color: #1e40af;
+    }
+
+    .toast.warning {
+      background: #fffbeb;
+      border: 1px solid #fbbf24;
+      color: #92400e;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(40px); }
+    }
+
+    .settings-btn {
+      padding: 8px 16px;
+      background: #fafafa;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #555;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .settings-btn:hover {
+      background: #f0f0f0;
+      border-color: #ccc;
+    }
+
+    .settings-btn.configured {
+      border-color: #4caf50;
+      color: #4caf50;
+    }
+
+    .settings-preset-btn {
+      padding: 6px 12px;
+      background: #f0f7ff;
+      border: 1px solid #b3d4fc;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #0066cc;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .settings-preset-btn:hover {
+      background: #e0eeff;
+      border-color: #80b5f0;
+    }
+
+    .settings-textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: "SF Mono", Monaco, Consolas, monospace;
+      color: #333;
+      background: white;
+      transition: border-color 0.2s;
+      outline: none;
+      resize: vertical;
+      min-height: 36px;
+    }
+
+    .settings-textarea:focus {
+      border-color: #0066cc;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+
+    .settings-presets {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .settings-presets-label {
+      font-size: 12px;
+      color: #999;
+      margin-right: 4px;
+      line-height: 28px;
+    }
   </style>
 </head>
 
@@ -976,6 +1307,7 @@
       <span class="header-id" style="font-size: 13px; color: #666;">小黑盒 ID: 93365144</span>
       <a href="https://evgo2017.com/blog/xiaoheihe-editor" target="_blank" class="header-link">项目主页</a>
       <a href="https://github.com/evgo2017/xiaoheihe-editor" target="_blank" class="header-link">源码仓库</a>
+      <button class="settings-btn" id="imgHostBtn">🖼️ 图床设置</button>
       <button class="help-btn" id="helpBtn">语法帮助</button>
     </div>
   </header>
@@ -1093,18 +1425,78 @@
             <button class="export-copy-btn" id="exportCopyBtn">
               <span class="copy-icon">📋</span> 一键复制文字内容
             </button>
+            <div class="upload-status" id="uploadStatus">
+              <div class="upload-spinner"></div>
+              <span id="uploadStatusText">正在上传图片...</span>
+            </div>
           </div>
           <div class="image-copy-hint" style="margin-top: 0; padding: 10px 14px;">
             <strong style="display: block; margin-bottom: 4px;">🚀 操作步骤</strong>
             <div style="margin: 0; line-height: 1.8; font-size: 13px; color: #666;">
-              • 点击按钮复制文字后直接在小黑盒粘贴即可。 <br>
-              • 代码块与表格图片，特殊情况时，可右键图片手动复制粘贴。
+              • 配置图床后，点击复制按钮会自动上传图片并复制富文本。<br>
+              • 未配置图床时，仍可复制文字，图片需手动右键复制粘贴。<br>
+              • 推荐在「图床设置」中配置你的图床服务以获得最佳体验。
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- 图床设置弹窗 -->
+  <div class="settings-overlay" id="imgHostOverlay">
+    <div class="settings-modal">
+      <div class="settings-header">
+        <span class="settings-title">🖼️ 图床设置</span>
+        <button class="settings-close" id="imgHostClose">&times;</button>
+      </div>
+      <div class="settings-body">
+        <div class="settings-presets">
+          <span class="settings-presets-label">快速填充：</span>
+          <button class="settings-preset-btn" id="presetImgBB">📦 ImgBB</button>
+          <button class="settings-preset-btn" id="presetCFBed">☁️ CF ImgBed</button>
+          <button class="settings-preset-btn" id="presetClear">🗑️ 清空</button>
+        </div>
+        <div class="settings-group">
+          <label class="settings-label">上传接口 URL</label>
+          <input type="text" class="settings-input" id="imgHostUrl" placeholder="例: https://api.imgbb.com/1/upload">
+          <div class="settings-hint">图片上传的 POST 接口地址，可包含 Query 参数（如 ?authCode=xxx），留空则不使用图床</div>
+        </div>
+        <div class="settings-group">
+          <label class="settings-label">图片字段名</label>
+          <input type="text" class="settings-input" id="imgHostFieldName" placeholder="例: image 或 file">
+          <div class="settings-hint">FormData 中图片文件对应的字段名</div>
+        </div>
+        <div class="settings-group">
+          <label class="settings-label">额外 POST 参数（JSON）</label>
+          <textarea class="settings-textarea" id="imgHostExtraParams" rows="2" placeholder='{"key": "你的API_KEY"}'></textarea>
+          <div class="settings-hint">会作为 FormData 附加发送，如 API Key 等。若认证在 URL Query 中则留空</div>
+        </div>
+        <div class="settings-group">
+          <label class="settings-label">响应图片 URL 路径</label>
+          <input type="text" class="settings-input" id="imgHostResponsePath" placeholder="例: data.url 或 0.src">
+          <div class="settings-hint">从 JSON 响应中提取图片地址，数组用索引如 0.src</div>
+        </div>
+        <div class="settings-group">
+          <label class="settings-label">URL 前缀（可选）</label>
+          <input type="text" class="settings-input" id="imgHostUrlPrefix" placeholder="例: https://imgbed.example.com">
+          <div class="settings-hint">响应为相对路径时自动拼接此前缀，已是完整 URL 则无需填写</div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-row">
+            <span class="settings-label" style="margin-bottom: 0;">测试连接</span>
+            <button class="settings-test-btn" id="imgHostTestBtn">🔗 测试上传</button>
+          </div>
+        </div>
+      </div>
+      <div class="settings-footer">
+        <button class="settings-save-btn" id="imgHostSaveBtn">保存设置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast 提示容器 -->
+  <div class="toast-container" id="toastContainer"></div>
 
   <!-- 状态栏 -->
   <div class="status-bar">
@@ -1608,8 +2000,7 @@ function generateCodeBlockImage(code, language) {
         const language = match[1] || '';
         const code = match[2].trim();
         const imageUrl = generateCodeBlockImage(code, language);
-        // Add specific alt text to identify these images later
-        processed = processed.replace(match[0], `\n![代码块](${imageUrl})\n`);
+        processed = processed.replace(match[0], `![代码块](${imageUrl})`);
       }
 
       // 2. 处理表格
@@ -1619,7 +2010,7 @@ function generateCodeBlockImage(code, language) {
         const tableData = parseTable(tableMarkdown);
         if (tableData.length > 0) {
           const imageUrl = generateTableImage(tableData);
-          processed = processed.replace(tableMarkdown, `\n![表格](${imageUrl})\n`);
+          processed = processed.replace(tableMarkdown, `![表格](${imageUrl})`);
         }
       });
 
@@ -1882,12 +2273,155 @@ function generateCodeBlockImage(code, language) {
       }, 0);
     }
 
-    // 复制到剪贴板功能
-    const exportCopyBtn = document.getElementById('exportCopyBtn');
+    // =============================================
+    // 图床设置管理
+    // =============================================
+    const IMGHOST_STORAGE_KEY = 'xiaoheihe_editor_imghost_settings';
+    const imgHostBtn = document.getElementById('imgHostBtn');
+    const imgHostOverlay = document.getElementById('imgHostOverlay');
+    const imgHostClose = document.getElementById('imgHostClose');
+    const imgHostUrl = document.getElementById('imgHostUrl');
+    const imgHostFieldName = document.getElementById('imgHostFieldName');
+    const imgHostExtraParams = document.getElementById('imgHostExtraParams');
+    const imgHostResponsePath = document.getElementById('imgHostResponsePath');
+    const imgHostUrlPrefix = document.getElementById('imgHostUrlPrefix');
+    const imgHostTestBtn = document.getElementById('imgHostTestBtn');
+    const imgHostSaveBtn = document.getElementById('imgHostSaveBtn');
+    const presetImgBB = document.getElementById('presetImgBB');
+    const presetCFBed = document.getElementById('presetCFBed');
+    const presetClear = document.getElementById('presetClear');
+    const uploadStatus = document.getElementById('uploadStatus');
+    const uploadStatusText = document.getElementById('uploadStatusText');
 
-    // 将 base64 图片转换为 Blob
-    function base64ToBlob(base64) {
-      const parts = base64.split(';base64,');
+    // 默认设置结构
+    function getDefaultSettings() {
+      return { uploadUrl: '', fieldName: '', extraParams: '', responsePath: '', urlPrefix: '' };
+    }
+
+    // 加载已保存的设置
+    function loadImgHostSettings() {
+      try {
+        const saved = localStorage.getItem(IMGHOST_STORAGE_KEY);
+        if (saved) {
+          return { ...getDefaultSettings(), ...JSON.parse(saved) };
+        }
+      } catch (e) {
+        console.warn('加载图床设置失败:', e);
+      }
+      return getDefaultSettings();
+    }
+
+    // 保存设置
+    function saveImgHostSettings(settings) {
+      localStorage.setItem(IMGHOST_STORAGE_KEY, JSON.stringify(settings));
+      updateImgHostBtnState(settings);
+    }
+
+    // 更新按钮状态
+    function updateImgHostBtnState(settings) {
+      if (settings.uploadUrl) {
+        imgHostBtn.classList.add('configured');
+        imgHostBtn.textContent = '🖼️ 图床已配置';
+      } else {
+        imgHostBtn.classList.remove('configured');
+        imgHostBtn.textContent = '🖼️ 图床设置';
+      }
+    }
+
+    // 填充 UI 表单
+    function fillSettingsForm(settings) {
+      imgHostUrl.value = settings.uploadUrl || '';
+      imgHostFieldName.value = settings.fieldName || '';
+      imgHostExtraParams.value = settings.extraParams || '';
+      imgHostResponsePath.value = settings.responsePath || '';
+      imgHostUrlPrefix.value = settings.urlPrefix || '';
+    }
+
+    // 从 UI 表单读取
+    function readSettingsForm() {
+      return {
+        uploadUrl: imgHostUrl.value.trim(),
+        fieldName: imgHostFieldName.value.trim(),
+        extraParams: imgHostExtraParams.value.trim(),
+        responsePath: imgHostResponsePath.value.trim(),
+        urlPrefix: imgHostUrlPrefix.value.trim()
+      };
+    }
+
+    // 初始化
+    const currentSettings = loadImgHostSettings();
+    fillSettingsForm(currentSettings);
+    updateImgHostBtnState(currentSettings);
+
+    // 打开/关闭设置弹窗
+    imgHostBtn.addEventListener('click', () => {
+      fillSettingsForm(loadImgHostSettings());
+      imgHostOverlay.classList.add('active');
+    });
+
+    imgHostClose.addEventListener('click', () => {
+      imgHostOverlay.classList.remove('active');
+    });
+
+    imgHostOverlay.addEventListener('mousedown', (e) => {
+      if (e.target === imgHostOverlay) {
+        imgHostOverlay.classList.remove('active');
+      }
+    });
+
+    // ImgBB 预设
+    presetImgBB.addEventListener('click', () => {
+      fillSettingsForm({
+        uploadUrl: 'https://api.imgbb.com/1/upload',
+        fieldName: 'image',
+        extraParams: '{"key": "在此填入你的ImgBB_API_Key"}',
+        responsePath: 'data.url',
+        urlPrefix: ''
+      });
+    });
+
+    // CF ImgBed 预设
+    presetCFBed.addEventListener('click', () => {
+      fillSettingsForm({
+        uploadUrl: '在此填入你的图床域名/upload?authCode=在此填入authCode',
+        fieldName: 'file',
+        extraParams: '',
+        responsePath: '0.src',
+        urlPrefix: '在此填入你的图床域名'
+      });
+    });
+
+    // 清空预设
+    presetClear.addEventListener('click', () => {
+      fillSettingsForm(getDefaultSettings());
+    });
+
+    // 保存按钮
+    imgHostSaveBtn.addEventListener('click', () => {
+      const settings = readSettingsForm();
+      saveImgHostSettings(settings);
+      imgHostOverlay.classList.remove('active');
+    });
+
+    // =============================================
+    // 通用图片上传
+    // =============================================
+
+    // 从 JSON 对象中根据路径提取值，支持数组索引
+    // 例: "data.url" -> obj.data.url, "0.src" -> obj[0].src
+    function getValueByPath(obj, path) {
+      return path.split('.').reduce((o, key) => {
+        if (o === undefined || o === null) return undefined;
+        // 支持数组索引
+        const index = parseInt(key, 10);
+        if (!isNaN(index) && Array.isArray(o)) return o[index];
+        return o[key];
+      }, obj);
+    }
+
+    // 将 base64 data URL 转换为 File 对象
+    function base64ToFile(dataUrl, filename) {
+      const parts = dataUrl.split(';base64,');
       const contentType = parts[0].split(':')[1];
       const raw = window.atob(parts[1]);
       const rawLength = raw.length;
@@ -1895,43 +2429,269 @@ function generateCodeBlockImage(code, language) {
       for (let i = 0; i < rawLength; ++i) {
         uInt8Array[i] = raw.charCodeAt(i);
       }
-      return new Blob([uInt8Array], { type: contentType });
+      const ext = contentType.split('/')[1] || 'png';
+      return new File([uInt8Array], filename || `image.${ext}`, { type: contentType });
     }
 
-    exportCopyBtn.addEventListener('click', () => {
-      if (!exportEditorView) return;
+    async function uploadImageToHost(imageData, settings) {
+      const formData = new FormData();
+
+      // 将图片作为 File 对象发送（兼容所有图床 API）
+      if (imageData.startsWith('data:')) {
+        const file = base64ToFile(imageData, 'upload.png');
+        formData.append(settings.fieldName || 'file', file);
+      } else {
+        // 非 data URL 直接作为字符串发送
+        formData.append(settings.fieldName || 'file', imageData);
+      }
+
+      // 解析并附加额外参数
+      if (settings.extraParams) {
+        try {
+          const extra = JSON.parse(settings.extraParams);
+          for (const [k, v] of Object.entries(extra)) {
+            formData.append(k, v);
+          }
+        } catch (e) {
+          throw new Error('额外参数 JSON 格式错误: ' + e.message);
+        }
+      }
+
+      const response = await fetch(settings.uploadUrl, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`上传失败: HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      let imgUrl = getValueByPath(result, settings.responsePath || 'url');
+      if (!imgUrl) {
+        throw new Error(`无法从响应中提取图片 URL (路径: ${settings.responsePath})，响应: ${JSON.stringify(result).substring(0, 200)}`);
+      }
+
+      // 如果返回的是相对路径且配置了 URL 前缀，自动拼接
+      if (settings.urlPrefix && !imgUrl.startsWith('http')) {
+        const prefix = settings.urlPrefix.replace(/\/+$/, ''); // 去掉末尾斜杠
+        imgUrl = prefix + (imgUrl.startsWith('/') ? '' : '/') + imgUrl;
+      }
+
+      return imgUrl;
+    }
+
+    // 测试连接按钮
+    imgHostTestBtn.addEventListener('click', async () => {
+      const settings = readSettingsForm();
+      if (!settings.uploadUrl) {
+        showToast('error', '请先填写上传接口 URL');
+        return;
+      }
+
+      imgHostTestBtn.disabled = true;
+      imgHostTestBtn.textContent = '测试中...';
+      imgHostTestBtn.className = 'settings-test-btn';
 
       try {
-        // Use ProseMirror's native Selection mechanism
-        // This triggers ProseMirror's DOMSerializer on copy, producing cleaner, schema-compliant HTML
-        const { state, dispatch } = exportEditorView;
-        const tr = state.tr.setSelection(new AllSelection(state.doc));
-        dispatch(tr);
+        const canvas = document.createElement('canvas');
+        canvas.width = 1;
+        canvas.height = 1;
+        const testBase64 = canvas.toDataURL('image/png');
 
-        // Focus the editor to ensure the browser recognizes the selection for the copy event
-        exportEditorView.focus();
+        const url = await uploadImageToHost(testBase64, settings);
+        imgHostTestBtn.textContent = '✓ 成功';
+        imgHostTestBtn.classList.add('success');
+        showToast('success', '✓ 测试成功！图片地址: ' + url);
+      } catch (err) {
+        console.error('图床测试失败:', err);
+        imgHostTestBtn.textContent = '✗ 失败';
+        imgHostTestBtn.classList.add('error');
+        showToast('error', '测试失败: ' + err.message);
+      }
 
-        // Execute Copy
-        const successful = document.execCommand('copy');
+      setTimeout(() => {
+        imgHostTestBtn.disabled = false;
+        imgHostTestBtn.textContent = '🔗 测试上传';
+        imgHostTestBtn.className = 'settings-test-btn';
+      }, 2000);
+    });
 
-        if (successful) {
-          // Show success state
-          const originalText = exportCopyBtn.innerHTML;
-          exportCopyBtn.innerHTML = '<span class="copy-icon">✓</span> 已复制';
-          exportCopyBtn.classList.add('copied');
+    // =============================================
+    // 复制到剪贴板功能（图床模式）
+    // =============================================
+    const exportCopyBtn = document.getElementById('exportCopyBtn');
 
-          setTimeout(() => {
-            exportCopyBtn.innerHTML = originalText;
-            exportCopyBtn.classList.remove('copied');
-          }, 2000);
-        } else {
-          throw new Error('execCommand copy failed');
+    // 图片上传缓存：base64 src -> 已上传的 URL
+    const imgUploadCache = new Map();
+
+    // Toast 提示函数
+    function showToast(type, message, duration = 3500) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      toast.style.animationDelay = `0s, ${duration / 1000}s`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), duration + 400);
+    }
+
+    // 清理 HTML：移除多余元素（避免粘贴时多出空行和错误图片）
+    function cleanHtmlForClipboard(html, keepNonHttpImages) {
+      const container = document.createElement('div');
+      container.innerHTML = html;
+
+      // 1. 移除所有 src 不是 http/https 的 img
+      container.querySelectorAll('img').forEach(img => {
+        if (!img.src.startsWith('http')) {
+          if (keepNonHttpImages) {
+            // 未配置图床时，替换为占位符文本
+            const placeholder = document.createElement('p');
+            placeholder.textContent = `【图片：${img.alt || '请手动复制'}】`;
+            placeholder.style.cssText = 'color:#999; text-align:center; padding:8px; border:1px dashed #ccc; border-radius:4px; margin:8px 0;';
+            img.replaceWith(placeholder);
+          } else {
+            img.remove();
+          }
         }
+      });
+
+      // 2. 将 <p><img></p> 中的 img 从 p 中提取出来
+      container.querySelectorAll('p > img').forEach(img => {
+        const p = img.parentElement;
+        // 如果 p 里只有这个 img（可能有空白文本），则用 img 替换整个 p
+        const hasOnlyImg = [...p.childNodes].every(
+          node => node === img || (node.nodeType === 3 && !node.textContent.trim())
+        );
+        if (hasOnlyImg) {
+          p.replaceWith(img);
+        }
+      });
+
+      // 3. 移除空段落（只含 <br> 或空白的 <p>）
+      container.querySelectorAll('p').forEach(p => {
+        if (!p.textContent.trim() && !p.querySelector('img')) {
+          p.remove();
+        }
+      });
+
+      return container.innerHTML;
+    }
+
+    // 使用 Clipboard API 异步复制 HTML 内容
+    async function performCopyAsync(keepNonHttpImages = false) {
+      const editorDom = exportEditorView.dom;
+      const rawHtml = editorDom.innerHTML;
+      const html = cleanHtmlForClipboard(rawHtml, keepNonHttpImages);
+      const text = editorDom.innerText;
+
+      // 添加 meta charset 确保粘贴时第一行格式不丢失
+      const fullHtml = '<meta charset="utf-8">' + html;
+
+      const clipboardItem = new ClipboardItem({
+        'text/html': new Blob([fullHtml], { type: 'text/html' }),
+        'text/plain': new Blob([text], { type: 'text/plain' })
+      });
+      await navigator.clipboard.write([clipboardItem]);
+    }
+
+    // 显示复制成功状态
+    function showCopySuccess() {
+      const originalText = exportCopyBtn.innerHTML;
+      exportCopyBtn.innerHTML = '<span class="copy-icon">✓</span> 已复制';
+      exportCopyBtn.classList.add('copied');
+      setTimeout(() => {
+        exportCopyBtn.innerHTML = originalText;
+        exportCopyBtn.classList.remove('copied');
+      }, 2000);
+    }
+
+    exportCopyBtn.addEventListener('click', async () => {
+      if (!exportEditorView) return;
+
+      const settings = loadImgHostSettings();
+      const hasImgHost = !!settings.uploadUrl;
+
+      if (!hasImgHost) {
+        // 未配置图床 — 复制文字，图片位置插入占位符
+        try {
+          await performCopyAsync(true);
+          showCopySuccess();
+          showToast('warning', '· 图片已替换为占位符，请手动右键复制图片粘贴\n· 配置图床后可自动上传图片', 5000);
+        } catch (err) {
+          console.error('复制失败:', err);
+          showToast('error', '复制失败: ' + err.message);
+        }
+        return;
+      }
+
+      // 已配置图床 — 上传图片再复制
+
+      try {
+        exportCopyBtn.disabled = true;
+        uploadStatus.classList.add('active');
+
+        // 收集导出编辑器中所有图片
+        const editorDom = exportEditorView.dom;
+        const images = editorDom.querySelectorAll('img');
+        const originalSrcs = [];
+
+        if (images.length > 0) {
+          // 统计需要上传的 data: 图片数量
+          const dataImages = [...images].filter(img => img.src.startsWith('data:'));
+          const cachedCount = dataImages.filter(img => imgUploadCache.has(img.src)).length;
+          const needUpload = dataImages.length - cachedCount;
+
+          uploadStatusText.textContent = needUpload > 0
+            ? `正在上传图片 (0/${needUpload})...`
+            : '正在使用缓存...';
+
+          let uploaded = 0;
+          for (const img of images) {
+            originalSrcs.push(img.src);
+
+            if (img.src.startsWith('data:')) {
+              // 检查缓存
+              if (imgUploadCache.has(img.src)) {
+                img.src = imgUploadCache.get(img.src);
+                continue;
+              }
+
+              try {
+                const origSrc = img.src;
+                const url = await uploadImageToHost(img.src, settings);
+                imgUploadCache.set(origSrc, url);
+                img.src = url;
+                uploaded++;
+                uploadStatusText.textContent = `正在上传图片 (${uploaded}/${needUpload})...`;
+              } catch (uploadErr) {
+                console.warn('单张图片上传失败，保留原始 base64:', uploadErr);
+              }
+            }
+          }
+        }
+
+        uploadStatusText.textContent = '正在复制...';
+
+        // 使用 Clipboard API 复制（HTML 已清理掉多余的 p 包裹）
+        await performCopyAsync();
+
+        // 还原 DOM（避免影响预览显示）
+        images.forEach((img, i) => {
+          if (originalSrcs[i]) {
+            img.src = originalSrcs[i];
+          }
+        });
+
+        uploadStatus.classList.remove('active');
+        exportCopyBtn.disabled = false;
+        showCopySuccess();
 
       } catch (err) {
         console.error('复制失败:', err);
-        // Fallback or alert
-        alert('复制失败，请尝试手动选中编辑器内容后复制');
+        uploadStatus.classList.remove('active');
+        exportCopyBtn.disabled = false;
+        showToast('error', '复制失败: ' + err.message);
       }
     });
   </script>
