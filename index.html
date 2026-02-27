@@ -1134,6 +1134,29 @@
     import { schema, defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
     import { exampleSetup } from 'prosemirror-example-setup';
 
+    function initBaiduTongji() {
+      const token = (import.meta.env.VITE_BAIDU_TONGJI_TOKEN || '').trim();
+      if (!token) return;
+
+      if (document.querySelector(`script[src="https://hm.baidu.com/hm.js?${token}"]`)) {
+        return;
+      }
+      
+      window._hmt = window._hmt || [];
+      (function () {
+        const hm = document.createElement('script');
+        hm.src = `https://hm.baidu.com/hm.js?${token}`;
+        const s = document.getElementsByTagName('script')[0];
+        if (s && s.parentNode) {
+          s.parentNode.insertBefore(hm, s);
+        } else {
+          document.head.appendChild(hm);
+        }
+      })();
+    }
+
+    initBaiduTongji();
+
     // 默认内容
     // 默认内容
     const defaultContent = `# 欢迎使用小黑盒文章编辑器
