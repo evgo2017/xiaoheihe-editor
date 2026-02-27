@@ -1671,6 +1671,9 @@ function generateCodeBlockImage(code, language) {
       processed = processed.replace(/(!?)\[([^\]]+)\]\(([^)"]+)\)/g, (match, prefix, text, url) => {
         if (prefix === '!') return match; // Skip images
         const cleanUrl = url.trim();
+        if (/^https:\/\/www\.xiaoheihe\.cn\/app\/bbs\/link\/\S+/i.test(cleanUrl)) {
+          return match;
+        }
         return `**${text}**（${cleanUrl}）`;
       });
 
