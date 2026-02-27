@@ -1101,7 +1101,8 @@
             <strong style="display: block; margin-bottom: 4px;">💡 注意事项</strong>
             <div style="margin: 0; line-height: 1.8; font-size: 13px; color: #666;">
               • 如果没有复制成功，可直接在导出框内手动全选内容复制。<br>
-              • 代码块与表格的图片，可右键单击，再选择“复制图像”后粘贴。
+              • 代码块和表格的图片，可右键单击，再选择“复制图像”后粘贴。<br>
+              • 复制会在文末增加“辅助排版”文字，希望能够保留以优化编辑器
             </div>
           </div>
         </div>
@@ -1936,6 +1937,21 @@ function generateCodeBlockImage(code, language) {
 
     // 复制到剪贴板功能
     const exportCopyBtn = document.getElementById('exportCopyBtn');
+    const copyAttributionMarkdown = '--- 本文使用[小黑盒编辑器](https://www.xiaoheihe.cn/app/bbs/link/174746088)辅助排版 ---';
+
+    function appendAttributionToSourceTemporarily() {
+      const originalContent = mdView.content || '';
+      const trimmed = originalContent.replace(/\s+$/, '');
+      const tempContent = trimmed ? `${trimmed}\n\n${copyAttributionMarkdown}` : copyAttributionMarkdown;
+      mdView.textarea.value = tempContent;
+      mdView.onChange(tempContent);
+      return originalContent;
+    }
+
+    function restoreSourceContent(originalContent) {
+      mdView.textarea.value = originalContent;
+      mdView.onChange(originalContent);
+    }
 
     // 将 base64 图片转换为 Blob
     function base64ToBlob(base64) {
@@ -1950,10 +1966,14 @@ function generateCodeBlockImage(code, language) {
       return new Blob([uInt8Array], { type: contentType });
     }
 
-    exportCopyBtn.addEventListener('click', () => {
+    exportCopyBtn.addEventListener('click', async () => {
       if (!exportEditorView) return;
 
+      let originalSourceContent = null;
       try {
+        originalSourceContent = appendAttributionToSourceTemporarily();
+        await updateExportContent();
+
         // Use ProseMirror's native Selection mechanism
         // This triggers ProseMirror's DOMSerializer on copy, producing cleaner, schema-compliant HTML
         const { state, dispatch } = exportEditorView;
@@ -1984,6 +2004,13 @@ function generateCodeBlockImage(code, language) {
         console.error('复制失败:', err);
         // Fallback or alert
         alert('复制失败，请尝试手动选中编辑器内容后复制');
+      } finally {
+        if (originalSourceContent !== null) {
+          restoreSourceContent(originalSourceContent);
+          if (!panes.export.hidden) {
+            await updateExportContent();
+          }
+        }
       }
     });
   </script>
