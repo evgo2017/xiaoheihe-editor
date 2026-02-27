@@ -11,7 +11,7 @@ A specialized Markdown conversion tool designed for the [XiaoHeiHe](https://xiao
 
 **🌐 Live Demo:** [evgo2017.com/project/xiaoheihe-editor](https://evgo2017.com/project/xiaoheihe-editor)
 
-![image-20260204180354282](./public/assets/image-20260204180354282.png)
+![example](./public/assets/example.png)
 
 Want to self-host? One-click deploy to [Vercel](https://vercel.com/) [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fevgo2017%2Fxiaoheihe-editor&env=BASE_PATH&envDefaults=%7B%22BASE_PATH%22%3A%22%2F%22%7D&project-name=xiaoheihe-editor&repository-name=xiaoheihe-editor)
 
