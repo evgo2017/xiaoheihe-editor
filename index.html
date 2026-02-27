@@ -1309,6 +1309,20 @@ function generateCodeBlockImage(code, language) {
     // 导出预览
     const exportEditorTarget = document.getElementById('export-editor');
 
+    function getRenderScale() {
+      const dpr = window.devicePixelRatio || 1;
+      return Math.min(3, Math.max(2, dpr));
+    }
+
+    function setupHiDpiCanvas(canvas, logicalWidth, logicalHeight) {
+      const scale = getRenderScale();
+      canvas.width = Math.round(logicalWidth * scale);
+      canvas.height = Math.round(logicalHeight * scale);
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      return ctx;
+    }
+
     // 将代码块生成图片
     // Helper for Code Highlighting
     function drawHighlightedCode(ctx, text, x, y) {
@@ -1352,17 +1366,17 @@ function generateCodeBlockImage(code, language) {
 
     function generateCodeBlockImage(code, language) {
       const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const measureCtx = canvas.getContext('2d');
 
       const padding = 16;
       const lineHeight = 20;
       const lines = code.split('\n');
 
       // Calculate required width based on content
-      ctx.font = '14px "SF Mono", Monaco, Consolas, monospace';
+      measureCtx.font = '14px "SF Mono", Monaco, Consolas, monospace';
       let maxLineWidth = 0;
       lines.forEach(line => {
-        const metrics = ctx.measureText(line);
+        const metrics = measureCtx.measureText(line);
         if (metrics.width > maxLineWidth) {
           maxLineWidth = metrics.width;
         }
@@ -1372,26 +1386,25 @@ function generateCodeBlockImage(code, language) {
       // No truncation for lines or width now, as requested.
       const height = padding * 2 + (language ? 30 : 0) + lines.length * lineHeight;
 
-      canvas.width = maxWidth;
-      canvas.height = height;
+      const ctx = setupHiDpiCanvas(canvas, maxWidth, height);
 
       // 背景
       ctx.fillStyle = '#f5f5f5';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, maxWidth, height);
 
       // 边框
       ctx.strokeStyle = '#e0e0e0';
       ctx.lineWidth = 1;
-      ctx.strokeRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeRect(0, 0, maxWidth, height);
 
       // 语言标签
       if (language) {
         ctx.fillStyle = '#e0e0e0';
-        ctx.fillRect(0, 0, canvas.width, 24);
+        ctx.fillRect(0, 0, maxWidth, 24);
         ctx.fillStyle = '#666';
         ctx.font = '12px -apple-system, sans-serif';
         ctx.textAlign = 'right';
-        ctx.fillText(language, canvas.width - 10, 16);
+        ctx.fillText(language, maxWidth - 10, 16);
         ctx.textAlign = 'left';
       }
 
@@ -1464,7 +1477,7 @@ function generateCodeBlockImage(code, language) {
     // 将表格生成图片
     function generateTableImage(tableData) {
       const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const measureCtx = canvas.getContext('2d');
 
       const padding = 12;
       const cellPadding = 10;
@@ -1486,7 +1499,7 @@ function generateCodeBlockImage(code, language) {
         const rowCells = [];
 
         row.forEach(cellText => {
-          const lines = getWrappedLines(ctx, cellText, cellContentWidth);
+          const lines = getWrappedLines(measureCtx, cellText, cellContentWidth);
           rowCells.push(lines);
           if (lines.length > maxLinesInRow) {
             maxLinesInRow = lines.length;
@@ -1504,12 +1517,11 @@ function generateCodeBlockImage(code, language) {
         totalHeight += rowTotalHeight;
       });
 
-      canvas.width = maxWidth;
-      canvas.height = totalHeight;
+      const ctx = setupHiDpiCanvas(canvas, maxWidth, totalHeight);
 
       // 背景
       ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, maxWidth, totalHeight);
 
       let currentY = padding;
 
