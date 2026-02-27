@@ -1135,6 +1135,8 @@
     import { exampleSetup } from 'prosemirror-example-setup';
 
     function initBaiduTongji() {
+      if (!import.meta.env.PROD) return;
+
       const token = (import.meta.env.VITE_BAIDU_TONGJI_TOKEN || '').trim();
       if (!token) return;
 
@@ -1143,9 +1145,14 @@
       }
       
       window._hmt = window._hmt || [];
+      window._hmt.push(['_setAutoPageview', false]);
       (function () {
         const hm = document.createElement('script');
         hm.src = `https://hm.baidu.com/hm.js?${token}`;
+        hm.onload = () => {
+          const pagePath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+          window._hmt.push(['_trackPageview', pagePath]);
+        };
         const s = document.getElementsByTagName('script')[0];
         if (s && s.parentNode) {
           s.parentNode.insertBefore(hm, s);
