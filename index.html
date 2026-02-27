@@ -1678,9 +1678,34 @@ function generateCodeBlockImage(code, language) {
     }
 
     let exportEditorView = null;
+    let exportRenderVersion = 0;
+
+    function getScrollSnapshot(element) {
+      if (!element) return null;
+      const maxScroll = Math.max(0, element.scrollHeight - element.clientHeight);
+      const top = element.scrollTop;
+      const percent = maxScroll > 0 ? top / maxScroll : 0;
+      return { top, percent };
+    }
+
+    function restoreScrollFromSnapshot(element, snapshot) {
+      if (!element || !snapshot) return;
+
+      const maxScroll = Math.max(0, element.scrollHeight - element.clientHeight);
+      const nextTop = maxScroll > 0
+        ? Math.round(snapshot.percent * maxScroll)
+        : 0;
+
+      // Prevent restoring scroll from feeding back into synchronized scrolling.
+      isSyncingScroll = true;
+      element.scrollTop = Math.max(0, nextTop);
+      window.requestAnimationFrame(() => {
+        isSyncingScroll = false;
+      });
+    }
 
     // 创建导出编辑器视图（只读）
-    function createExportEditor(target, content) {
+    function createExportEditor(target, content, scrollSnapshot = null) {
       // 如果已存在，先销毁
       if (exportEditorView) {
         exportEditorView.destroy();
@@ -1706,9 +1731,12 @@ function generateCodeBlockImage(code, language) {
         }),
         editable: () => false // Read only
       });
+      const currentExportView = exportEditorView;
 
       // Post-process DOM: Fix styles and add listeners
       setTimeout(() => {
+        if (exportEditorView !== currentExportView) return;
+
         const images = target.querySelectorAll('img');
         images.forEach(img => {
           // ... 
@@ -1724,6 +1752,7 @@ function generateCodeBlockImage(code, language) {
         // Add scroll listener for sync
         if (exportEditorView) {
           exportEditorView.dom.addEventListener('scroll', handleScroll);
+          restoreScrollFromSnapshot(exportEditorView.dom, scrollSnapshot);
         }
       }, 50);
 
@@ -1746,9 +1775,12 @@ function generateCodeBlockImage(code, language) {
     // Initial Sync function
     async function updateExportContent() {
       if (!panes.export.hidden) {
+        const currentVersion = ++exportRenderVersion;
+        const previousScroll = exportEditorView ? getScrollSnapshot(exportEditorView.dom) : null;
         const content = mdView.content;
         const processedContent = await processMarkdownForExport(content);
-        createExportEditor(exportEditorTarget, processedContent);
+        if (currentVersion !== exportRenderVersion) return;
+        createExportEditor(exportEditorTarget, processedContent, previousScroll);
       }
     }
 
